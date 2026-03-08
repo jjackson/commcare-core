@@ -23,7 +23,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
 
     private var root: AbstractTreeElement<*>? = null
     private var instanceId: String? = null
-    private var useCaseTemplate: Boolean = false
+    private var mUseCaseTemplate: Boolean = false
     private var reference: String? = null
     private var sourceUri: String? = null
     private var requestData: Multimap<String, String>? = null
@@ -49,7 +49,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
         this.instanceId = instanceId
         this.root = root
         this.reference = reference
-        this.useCaseTemplate = useCaseTemplate
+        this.mUseCaseTemplate = useCaseTemplate
         this.sourceUri = sourceUri
         this.requestData = requestData
         this.storageReferenceId = storageReferenceId
@@ -62,7 +62,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
         this.instanceId = externalDataInstanceSource.instanceId
         this.root = externalDataInstanceSource.root
         this.reference = externalDataInstanceSource.reference
-        this.useCaseTemplate = externalDataInstanceSource.useCaseTemplate()
+        this.mUseCaseTemplate = externalDataInstanceSource.useCaseTemplate()
         this.sourceUri = externalDataInstanceSource.sourceUri
         this.requestData = externalDataInstanceSource.requestData
         this.storageReferenceId = externalDataInstanceSource.storageReferenceId
@@ -106,7 +106,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
     @Throws(IOException::class, DeserializationException::class)
     override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         instanceId = ExtUtil.readString(`in`)
-        useCaseTemplate = ExtUtil.readBool(`in`)
+        mUseCaseTemplate = ExtUtil.readBool(`in`)
         sourceUri = ExtUtil.nullIfEmpty(ExtUtil.readString(`in`))
         @Suppress("UNCHECKED_CAST")
         requestData = ExtUtil.read(`in`, ExtWrapMultiMap(String::class.java), pf) as Multimap<String, String>
@@ -117,7 +117,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceId))
-        ExtUtil.writeBool(out, useCaseTemplate)
+        ExtUtil.writeBool(out, mUseCaseTemplate)
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(sourceUri))
         ExtUtil.write(out, ExtWrapMultiMap(requestData))
         ExtUtil.write(out, ExtWrapNullable(storageReferenceId?.toString()))
@@ -126,7 +126,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
 
     fun getInstanceId(): String? = instanceId
 
-    fun useCaseTemplate(): Boolean = useCaseTemplate
+    fun useCaseTemplate(): Boolean = mUseCaseTemplate
 
     fun getReference(): String? = reference
 
@@ -160,6 +160,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
             instance: ExternalDataInstance,
             storageReferenceId: String?
         ): ExternalDataInstanceSource {
+            @Suppress("UNCHECKED_CAST")
             return buildVirtual(
                 instance.getInstanceId(),
                 instance.getRoot() as TreeElement?,

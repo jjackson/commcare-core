@@ -52,7 +52,9 @@ object RestoreUtils {
     @JvmStatic
     fun getValue(xpath: String, tree: FormInstance): Any? {
         val context = topRef(tree)
-        val node = tree.resolveReference(ref(xpath).contextualize(context))
+        val contextualizedRef = ref(xpath).contextualize(context)
+            ?: throw RuntimeException("Could not contextualize reference [$xpath]")
+        val node = tree.resolveReference(contextualizedRef)
             ?: throw RuntimeException("Could not find node [$xpath] when parsing saved instance!")
 
         return if (node.isRelevant) {

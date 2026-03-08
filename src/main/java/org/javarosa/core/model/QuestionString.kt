@@ -23,6 +23,10 @@ class QuestionString : Externalizable {
     var textInner: String? = null
     var textFallback: String? = null
 
+    fun setTextId(textId: String?) {
+        this.textId = textId
+    }
+
     constructor()
 
     constructor(name: String?) {

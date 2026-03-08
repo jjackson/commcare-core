@@ -25,7 +25,7 @@ class GroupDef : IFormElement {
     // A list of questions on a group.
     private var children: Vector<IFormElement> = Vector()
     // True if this is a "repeat", false if it is a "group"
-    private var isRepeat: Boolean = false
+    private var mIsRepeat: Boolean = false
     // The group number.
     private var id: Int = Constants.NULL_ID
     // reference to a location in the model to store data in
@@ -98,11 +98,11 @@ class GroupDef : IFormElement {
      * @return true if this represents a <repeat> element
      */
     fun isRepeat(): Boolean {
-        return isRepeat
+        return mIsRepeat
     }
 
     fun setIsRepeat(repeat: Boolean) {
-        this.isRepeat = repeat
+        this.mIsRepeat = repeat
     }
 
     override fun getLabelInnerText(): String? {
@@ -196,7 +196,7 @@ class GroupDef : IFormElement {
     override fun writeExternal(dos: DataOutputStream) {
         ExtUtil.writeNumeric(dos, getID().toLong())
         ExtUtil.write(dos, ExtWrapNullable(getAppearanceAttr()))
-        ExtUtil.write(dos, ExtWrapTagged(getBind()))
+        ExtUtil.write(dos, ExtWrapTagged(getBind()!!))
         ExtUtil.write(dos, ExtWrapNullable(getTextID()))
         ExtUtil.write(dos, ExtWrapNullable(getLabelInnerText()))
         ExtUtil.writeBool(dos, isRepeat())

@@ -94,9 +94,10 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
         var result: T? = null
         for (i in 0 until ref.size()) {
             if (ec != null) {
-                val context = ec.currentQueryContext
+                val context = ec.getCurrentQueryContext()
                 QueryUtils.prepareSensitiveObjectForUseInCurrentContext(node, context)
-                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node, context)
+                @Suppress("UNCHECKED_CAST")
+                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node, context) as AbstractTreeElement<T>?
             }
             val name = ref.getName(i)
             var mult = ref.getMultiplicity(i)
@@ -131,7 +132,9 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
         }
 
         t = if (node === getBase()) null else result // never return a reference to '/'
-        referenceCache.register(ref, t)
+        if (t != null) {
+            referenceCache.register(ref, t)
+        }
         return t
     }
 
@@ -212,7 +215,8 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
 
         if (topRef.getMultiplicity(depth) == TreeReference.INDEX_ATTRIBUTE) {
             // recur on attribute node if the multiplicity designates it
-            return hasTemplatePathRec(topRef, currentNode.getAttribute(null, name!!), depth + 1)
+            @Suppress("UNCHECKED_CAST")
+            return hasTemplatePathRec(topRef, currentNode.getAttribute(null, name!!) as AbstractTreeElement<T>?, depth + 1)
         } else {
             // try to grab template node
             val nextNode = currentNode.getChild(name!!, TreeReference.INDEX_TEMPLATE)

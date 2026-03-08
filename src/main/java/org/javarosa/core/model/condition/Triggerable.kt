@@ -227,7 +227,7 @@ abstract class Triggerable : Externalizable {
     }
 
     override fun hashCode(): Int {
-        var hash = expr.hashCode()
+        var hash = expr?.hashCode() ?: 0
         for (trigRef in getTriggers()) {
             hash = hash xor trigRef.hashCode()
         }

@@ -17,7 +17,7 @@ import java.util.Date
  */
 class DateData : IAnswerData {
     var d: Date? = null
-    private var init: Boolean = false
+    private var mInit: Boolean = false
 
     /**
      * Empty Constructor, necessary for dynamic construction during deserialization.
@@ -30,9 +30,9 @@ class DateData : IAnswerData {
     }
 
     private fun init() {
-        if (!init) {
+        if (!mInit) {
             d = DateUtils.roundDate(d!!)
-            init = true
+            mInit = true
         }
     }
 
@@ -47,7 +47,7 @@ class DateData : IAnswerData {
             throw NullPointerException("Attempt to set an IAnswerData class to null.")
         }
         d = o as Date
-        init = false
+        mInit = false
     }
 
     override fun getValue(): Any {

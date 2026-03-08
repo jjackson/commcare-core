@@ -92,7 +92,7 @@ class TreeReferenceLevel : Externalizable {
             }
         }
 
-        return name.hashCode() xor multiplicity xor predPart
+        return (name?.hashCode() ?: 0) xor multiplicity xor predPart
     }
 
     /**
@@ -163,8 +163,8 @@ class TreeReferenceLevel : Externalizable {
          * Used by J2ME
          */
         @JvmStatic
-        fun attachCacheTable(refs: Interner<TreeReferenceLevel>?) {
-            TreeReferenceLevel.refs = refs
+        fun attachCacheTable(cacheTable: Interner<TreeReferenceLevel>?) {
+            refs = cacheTable
         }
     }
 }

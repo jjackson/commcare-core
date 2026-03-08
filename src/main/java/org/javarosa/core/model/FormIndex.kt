@@ -306,7 +306,7 @@ class FormIndex : Externalizable {
         if (subIndex == this) {
             return null
         }
-        return FormIndex(nextLevel!!.diff(subIndex), this.snip())
+        return FormIndex(nextLevel!!.diff(subIndex)!!, this.snip())
     }
 
     override fun toString(): String {

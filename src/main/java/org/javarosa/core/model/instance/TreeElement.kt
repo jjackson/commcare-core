@@ -492,7 +492,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    private fun readChildrenFromExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    private fun readChildrenFromExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         if (!ExtUtil.readBool(`in`)) {
             children = null
         } else {
@@ -508,7 +508,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    private fun readAttributesFromExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    private fun readAttributesFromExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         if (!ExtUtil.readBool(`in`)) {
             attributes = null
         } else {

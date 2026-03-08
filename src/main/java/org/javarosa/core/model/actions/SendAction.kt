@@ -69,7 +69,7 @@ class SendAction : Action {
             val value = child.getValue()
 
             if (value != null) {
-                map.put(name, value.uncast().getString())
+                map.put(name!!, value.uncast().getString()!!)
             }
         }
         return map
@@ -93,7 +93,7 @@ class SendAction : Action {
             return IElementHandler { p, e, parent ->
                 // the generic parseAction() method in XFormParser already checks to make sure
                 // that parent is an IFormElement, and throws an exception if it is not
-                p.parseSendAction((parent as IFormElement).actionController, e)
+                p.parseSendAction((parent as IFormElement).getActionController()!!, e)
             }
         }
     }

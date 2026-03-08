@@ -17,7 +17,7 @@ import java.util.Vector
 // TODO: This class needs to be immutable so that we can perform caching optimizations.
 class TreeReference : Externalizable, XPathAnalyzable {
 
-    private var hashCode = -1
+    private var cachedHashCode = -1
 
     // -1 = absolute, 0 = context node, 1 = parent, 2 = grandparent ...
     private var refLevel: Int = 0
@@ -73,7 +73,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     fun getNameLast(): String? = data!!.lastElement().getName()
 
     fun setMultiplicity(i: Int, mult: Int) {
-        hashCode = -1
+        cachedHashCode = -1
         data!!.setElementAt(data!!.elementAt(i).setMultiplicity(mult), i)
     }
 
@@ -94,7 +94,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     }
 
     private fun add(level: TreeReferenceLevel) {
-        hashCode = -1
+        cachedHashCode = -1
         size = -1
         data!!.addElement(level)
     }
@@ -111,7 +111,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
      *            to a reference level.
      */
     fun addPredicate(key: Int, xpe: Vector<XPathExpression>) {
-        hashCode = -1
+        cachedHashCode = -1
         data!!.setElementAt(data!!.elementAt(key).setPredicates(xpe), key)
     }
 
@@ -154,7 +154,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     fun getRefLevel(): Int = refLevel
 
     fun setRefLevel(refLevel: Int) {
-        hashCode = -1
+        cachedHashCode = -1
         this.refLevel = refLevel
     }
 
@@ -163,7 +163,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     }
 
     fun incrementRefLevel() {
-        hashCode = -1
+        cachedHashCode = -1
         if (!isAbsolute) {
             refLevel++
         }
@@ -204,7 +204,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
      */
     private fun removeLastLevel(): Boolean {
         val oldSize = size()
-        hashCode = -1
+        cachedHashCode = -1
         this.size = -1
         return if (oldSize == 0) {
             if (isAbsolute) {
@@ -336,7 +336,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
         }
 
         val newRef = anchor(contextRef) ?: return null
-        newRef.hashCode = -1
+        newRef.cachedHashCode = -1
         newRef.contextType = contextRef.getContextType()
 
         // apply multiplicities and fill in wildcards as necessary, based on the
@@ -499,8 +499,8 @@ class TreeReference : Externalizable, XPathAnalyzable {
     }
 
     override fun hashCode(): Int {
-        if (hashCode != -1) {
-            return hashCode
+        if (cachedHashCode != -1) {
+            return cachedHashCode
         }
         var hash = refLevel
         for (i in 0 until size()) {
@@ -522,7 +522,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
                 }
             }
         }
-        hashCode = hash
+        cachedHashCode = hash
         return hash
     }
 

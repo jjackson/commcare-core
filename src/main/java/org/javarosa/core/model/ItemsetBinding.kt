@@ -131,11 +131,11 @@ class ItemsetBinding : Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, nodesetRef)
-        ExtUtil.write(out, ExtWrapTagged(nodesetExpr))
-        ExtUtil.write(out, contextRef)
-        ExtUtil.write(out, labelRef)
-        ExtUtil.write(out, ExtWrapTagged(labelExpr))
+        ExtUtil.write(out, nodesetRef!!)
+        ExtUtil.write(out, ExtWrapTagged(nodesetExpr!!))
+        ExtUtil.write(out, contextRef!!)
+        ExtUtil.write(out, labelRef!!)
+        ExtUtil.write(out, ExtWrapTagged(labelExpr!!))
         ExtUtil.write(out, ExtWrapNullable(valueRef))
         ExtUtil.write(out, ExtWrapNullable(if (valueExpr == null) null else ExtWrapTagged(valueExpr)))
         ExtUtil.write(out, ExtWrapNullable(copyRef))

@@ -89,7 +89,7 @@ class EvaluationTraceReduction(trace: EvaluationTrace) : EvaluationTrace(trace.g
     override fun getProfileReport(): String {
         var response = "{\n"
         response += "    time: " + getRuntimeCount(getRuntimeInNanoseconds()) + "\n"
-        response += "    time/call: " + getRuntimeCount(getRuntimeInNanoseconds() / countExecuted) + "\n"
+        response += "    time/call: " + getRuntimeCount(getRuntimeInNanoseconds() / countExecuted.toLong()) + "\n"
         var valueResponseCount = 0
         val totalRecords = valueMap.size
         for (key in valueMap.keys) {

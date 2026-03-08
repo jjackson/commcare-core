@@ -94,7 +94,7 @@ class Selection : Externalizable {
     fun attachChoice(choice: SelectChoice) {
         this.choice = choice
         this.xmlValue = choice.value
-        this.index = choice.index
+        this.index = choice.getIndex()
     }
 
     fun attachChoice(q: QuestionDef) {

@@ -95,7 +95,7 @@ object ItemSetUtils {
         val choices = Vector<SelectChoice>()
         //Escalate the new context if our result set is substantial, this will prevent reverting
         //from a bulk read mode to a scanned read mode
-        val newContext = ec.currentQueryContext
+        val newContext = ec.getCurrentQueryContext()
             .checkForDerivativeContextAndReturn(matches.size)
         ec.setQueryContext(newContext)
 
@@ -132,7 +132,7 @@ object ItemSetUtils {
 
         val newContext = questionContext.spawnWithCleanLifecycle()
 
-        val isolatedContext = newContext.currentQueryContext
+        val isolatedContext = newContext.getCurrentQueryContext()
         val cache = isolatedContext.getQueryCache(ScopeLimitedReferenceRequestCache::class.java)
         cache.addTreeReferencesToLimitedScope(references)
         return newContext

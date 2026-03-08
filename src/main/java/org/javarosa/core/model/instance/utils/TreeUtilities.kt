@@ -78,7 +78,7 @@ object TreeUtilities {
         // proceeding in the future, since it's not exactly free...
 
         // Only do for predicates
-        if (mult != TreeReference.INDEX_UNBOUND || predicates == null) {
+        if (mult != TreeReference.INDEX_UNBOUND || predicates == null || name == null) {
             return null
         }
 

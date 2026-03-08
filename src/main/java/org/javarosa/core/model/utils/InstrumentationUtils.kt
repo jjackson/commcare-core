@@ -30,7 +30,8 @@ object InstrumentationUtils {
                 println(description)
             }
 
-            for (trace in reporter.getCollectedTraces()) {
+            val traces: List<EvaluationTrace> = reporter.getCollectedTraces().toList()
+            for (trace in traces) {
                 println("${trace.getExpression()}: ${trace.getValue()}")
                 print(TraceSerialization.serializeEvaluationTrace(trace, requestedInfo, reporter.reportAsFlat()))
             }
@@ -54,7 +55,8 @@ object InstrumentationUtils {
                 returnValue += description + "\n"
             }
 
-            for (trace in reporter.getCollectedTraces()) {
+            val traces: List<EvaluationTrace> = reporter.getCollectedTraces().toList()
+            for (trace in traces) {
                 returnValue += "${trace.getExpression()}: ${trace.getValue()}\n"
                 returnValue += TraceSerialization.serializeEvaluationTrace(
                     trace, requestedInfo, reporter.reportAsFlat()
@@ -73,7 +75,8 @@ object InstrumentationUtils {
                 println(description)
             }
 
-            for (trace in reporter.getCollectedTraces()) {
+            val traces: List<EvaluationTrace> = reporter.getCollectedTraces().toList()
+            for (trace in traces) {
                 if (trace.evaluationUsedExpressionCache()) {
                     println("${trace.getExpression()}: ${trace.getValue()}")
                     println("    ${trace.getCacheReport()}")
@@ -91,7 +94,8 @@ object InstrumentationUtils {
 
             val withCaching = mutableListOf<EvaluationTrace>()
             val withoutCaching = mutableListOf<EvaluationTrace>()
-            for (trace in reporter.getCollectedTraces()) {
+            val traces: List<EvaluationTrace> = reporter.getCollectedTraces().toList()
+            for (trace in traces) {
                 if (trace.evaluationUsedExpressionCache()) {
                     withCaching.add(trace)
                 } else {
