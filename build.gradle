@@ -35,6 +35,11 @@ repositories {
 
 test {
     reports.junitXml.destination = file('build/reports/tests')
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStackTraces true
+    }
 }
 
 sourceSets {
