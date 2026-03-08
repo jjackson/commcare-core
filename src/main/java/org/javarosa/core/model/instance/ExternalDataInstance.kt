@@ -13,15 +13,14 @@ import java.io.IOException
 /**
  * @author ctsims
  */
-@Suppress("UNCHECKED_CAST")
-open class ExternalDataInstance : DataInstance<AbstractTreeElement<*>> {
+open class ExternalDataInstance : AbstractExternalDataInstance {
 
     private var reference: String? = null
     private var root: AbstractTreeElement<*>? = null
     private var base: InstanceBase? = null
     private var source: ExternalDataInstanceSource? = null
 
-    constructor()
+    constructor() : super()
 
     constructor(reference: String?, instanceid: String?) : super(instanceid) {
         this.reference = reference
@@ -67,8 +66,7 @@ open class ExternalDataInstance : DataInstance<AbstractTreeElement<*>> {
 
     override fun getBase(): InstanceBase? = base
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getRoot(): AbstractTreeElement<*>? {
+    override fun getRootElement(): AbstractTreeElement<*>? {
         if (needsInit()) {
             throw RuntimeException("Attempt to use instance $instanceid without inititalization.")
         }
