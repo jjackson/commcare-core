@@ -6,7 +6,7 @@ import org.javarosa.core.model.instance.utils.ITreeVisitor
 import org.javarosa.xpath.expr.XPathExpression
 import java.util.Vector
 
-interface AbstractTreeElement<T : AbstractTreeElement<T>> {
+interface AbstractTreeElement<T> {
 
     val isLeaf: Boolean
 

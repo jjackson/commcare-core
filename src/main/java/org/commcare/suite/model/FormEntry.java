@@ -33,7 +33,7 @@ public class FormEntry extends Entry {
 
     public FormEntry(String commandId, DisplayUnit display,
                      Vector<SessionDatum> data, String formNamespace,
-                     Hashtable<String, DataInstance> instances,
+                     Hashtable<String, DataInstance<?>> instances,
                      Vector<StackOperation> stackOperations, AssertionSet assertions, PostRequest post) {
         super(commandId, display, data, instances, stackOperations, assertions);
 

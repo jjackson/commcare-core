@@ -64,7 +64,7 @@ public class EntryParser extends CommCareElementParser<Entry> {
 
         String xFormNamespace = null;
         Vector<SessionDatum> data = new Vector<>();
-        Hashtable<String, DataInstance> instances = new Hashtable<>();
+        Hashtable<String, DataInstance<?>> instances = new Hashtable<>();
 
         String commandId = "";
         DisplayUnit display = null;

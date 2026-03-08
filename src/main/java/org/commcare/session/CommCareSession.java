@@ -634,7 +634,6 @@ public class CommCareSession {
         Vector<Menu> menus = getMenusForCommand(command);
 
         Entry entry = null;
-        @SuppressWarnings("unchecked")
         Hashtable<String, DataInstance<?>> instancesInScope = new Hashtable<>();
         Hashtable<String, DataInstance<?>> menuInstances = null;
         Hashtable<String, DataInstance<?>> entryInstances = null;
@@ -667,7 +666,6 @@ public class CommCareSession {
         return new EvaluationContext(null, instancesInScope);
     }
 
-    @SuppressWarnings("unchecked")
     private void addInstancesFromFrame(Hashtable<String, DataInstance<?>> instanceMap,
             InstanceInitializationFactory iif) {
         for (StackFrameStep step : frame.getSteps()) {

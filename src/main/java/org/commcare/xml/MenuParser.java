@@ -32,7 +32,7 @@ public class MenuParser extends CommCareElementParser<Menu> {
         String root = parser.getAttributeValue(null, "root");
         root = root == null ? "root" : root;
 
-        Hashtable<String, DataInstance> instances = new Hashtable<>();
+        Hashtable<String, DataInstance<?>> instances = new Hashtable<>();
 
         String relevant = parser.getAttributeValue(null, "relevant");
         XPathExpression relevantExpression = null;

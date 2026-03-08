@@ -33,7 +33,7 @@ public abstract class Entry implements Externalizable, MenuDisplayable {
     Vector<SessionDatum> data;
     DisplayUnit display;
     private String commandId;
-    Hashtable<String, DataInstance> instances;
+    Hashtable<String, DataInstance<?>> instances;
     Vector<StackOperation> stackOperations;
     AssertionSet assertions;
 
@@ -45,7 +45,7 @@ public abstract class Entry implements Externalizable, MenuDisplayable {
 
     public Entry(String commandId, DisplayUnit display,
             Vector<SessionDatum> data,
-            Hashtable<String, DataInstance> instances,
+            Hashtable<String, DataInstance<?>> instances,
             Vector<StackOperation> stackOperations,
             AssertionSet assertions) {
         this.commandId = commandId == null ? "" : commandId;
@@ -92,7 +92,7 @@ public abstract class Entry implements Externalizable, MenuDisplayable {
         return data;
     }
 
-    public Hashtable<String, DataInstance> getInstances(Set<String> instancesToInclude) {
+    public Hashtable<String, DataInstance<?>> getInstances(Set<String> instancesToInclude) {
         return InstanceUtils.getLimitedInstances(instancesToInclude, instances);
     }
 
@@ -159,13 +159,14 @@ public abstract class Entry implements Externalizable, MenuDisplayable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void readExternal(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
         this.commandId = ExtUtil.readString(in);
         this.display = (DisplayUnit)ExtUtil.read(in, DisplayUnit.class, pf);
 
         data = (Vector<SessionDatum>)ExtUtil.read(in, new ExtWrapListPoly(), pf);
-        instances = (Hashtable<String, DataInstance>)ExtUtil.read(in, new ExtWrapMap(String.class, new ExtWrapTagged()), pf);
+        instances = (Hashtable<String, DataInstance<?>>)ExtUtil.read(in, new ExtWrapMap(String.class, new ExtWrapTagged()), pf);
         stackOperations = (Vector<StackOperation>)ExtUtil.read(in, new ExtWrapList(StackOperation.class), pf);
         assertions = (AssertionSet)ExtUtil.read(in, new ExtWrapNullable(AssertionSet.class), pf);
     }

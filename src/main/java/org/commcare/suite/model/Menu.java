@@ -44,7 +44,7 @@ public class Menu implements Externalizable, MenuDisplayable {
     private String style;
     private XPathExpression relevance;
     AssertionSet assertions;
-    Hashtable<String, DataInstance> instances;
+    Hashtable<String, DataInstance<?>> instances;
 
     /**
      * Serialization only!!!
@@ -57,7 +57,7 @@ public class Menu implements Externalizable, MenuDisplayable {
             XPathExpression relevance, DisplayUnit display,
             Vector<String> commandIds, String[] commandExprs,
             String style, AssertionSet assertions,
-            Hashtable<String, DataInstance> instances) {
+            Hashtable<String, DataInstance<?>> instances) {
         this.id = id;
         this.root = root;
         this.rawRelevance = rawRelevance;
@@ -128,7 +128,7 @@ public class Menu implements Externalizable, MenuDisplayable {
         return commandExprs[index] == null ? null : XPathParseTool.parseXPath(commandExprs[index]);
     }
 
-    public Hashtable<String, DataInstance> getInstances(Set<String> instancesToInclude) {
+    public Hashtable<String, DataInstance<?>> getInstances(Set<String> instancesToInclude) {
         return InstanceUtils.getLimitedInstances(instancesToInclude, instances);
     }
 
@@ -153,6 +153,7 @@ public class Menu implements Externalizable, MenuDisplayable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void readExternal(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
         id = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
@@ -160,7 +161,7 @@ public class Menu implements Externalizable, MenuDisplayable {
         rawRelevance = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
         display = (DisplayUnit)ExtUtil.read(in, DisplayUnit.class, pf);
         commandIds = (Vector<String>)ExtUtil.read(in, new ExtWrapList(String.class), pf);
-        instances = (Hashtable<String, DataInstance>)ExtUtil.read(in, new ExtWrapMap(String.class, new ExtWrapTagged()), pf);
+        instances = (Hashtable<String, DataInstance<?>>)ExtUtil.read(in, new ExtWrapMap(String.class, new ExtWrapTagged()), pf);
         commandExprs = new String[ExtUtil.readInt(in)];
         for (int i = 0; i < commandExprs.length; ++i) {
             if (ExtUtil.readBool(in)) {
