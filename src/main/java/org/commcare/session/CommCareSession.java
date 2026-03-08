@@ -634,9 +634,10 @@ public class CommCareSession {
         Vector<Menu> menus = getMenusForCommand(command);
 
         Entry entry = null;
-        Hashtable<String, DataInstance> instancesInScope = new Hashtable<>();
-        Hashtable<String, DataInstance> menuInstances = null;
-        Hashtable<String, DataInstance> entryInstances = null;
+        @SuppressWarnings("unchecked")
+        Hashtable<String, DataInstance<?>> instancesInScope = new Hashtable<>();
+        Hashtable<String, DataInstance<?>> menuInstances = null;
+        Hashtable<String, DataInstance<?>> entryInstances = null;
 
         if (!entries.isEmpty()) {
             entry = entries.elementAt(0);
@@ -666,7 +667,8 @@ public class CommCareSession {
         return new EvaluationContext(null, instancesInScope);
     }
 
-    private void addInstancesFromFrame(Hashtable<String, DataInstance> instanceMap,
+    @SuppressWarnings("unchecked")
+    private void addInstancesFromFrame(Hashtable<String, DataInstance<?>> instanceMap,
             InstanceInitializationFactory iif) {
         for (StackFrameStep step : frame.getSteps()) {
             instanceMap.putAll(step.getInstances(iif));

@@ -116,7 +116,6 @@ class EvaluationContext {
         base: EvaluationContext?
     ) : this(base, instance, base?.contextRef, formInstances)
 
-    @JvmSuppressWildcards
     constructor(
         instance: DataInstance<*>?,
         formInstances: Hashtable<String, DataInstance<*>>
