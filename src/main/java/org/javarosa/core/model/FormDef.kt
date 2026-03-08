@@ -406,7 +406,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             val templNode = mainInstance!!.getTemplate(repeatRef)!!
             val parentPath = templNode.getParent()!!.getRef().genericize()
             val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(repeatRef)!!)
-            relev = parentNode!!.isRelevant()
+            relev = parentNode!!.isRelevant
         }
 
         return relev
@@ -1722,7 +1722,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             // add all the attributes of this element
             for (i in 0 until treeElem.getAttributeCount()) {
                 val child =
-                    treeElem.getAttribute(treeElem.getAttributeNamespace(i)!!, treeElem.getAttributeName(i))!!
+                    treeElem.getAttribute(treeElem.getAttributeNamespace(i)!!, treeElem.getAttributeName(i)!!)!!
                 val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)
