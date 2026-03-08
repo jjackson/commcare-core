@@ -31,7 +31,7 @@ class Localizer @JvmOverloads constructor(
 
     private var locales: Vector<String> = Vector()
     private var localeResources: Hashtable<String, Vector<LocaleDataSource>> = Hashtable()
-    private var currentLocaleData: Hashtable<String, String> = Hashtable()
+    private var currentLocaleData: Hashtable<String, String>? = Hashtable()
     var defaultLocale: String? = null
         private set
     var locale: String? = null
@@ -124,7 +124,7 @@ class Localizer @JvmOverloads constructor(
      * Constructs a body of local resources to be the set of Current Locale Data.
      */
     private fun loadCurrentLocaleResources() {
-        currentLocaleData = getLocaleData(locale!!)!!
+        currentLocaleData = locale?.let { getLocaleData(it) }
     }
 
     /**
@@ -364,7 +364,7 @@ class Localizer @JvmOverloads constructor(
             throw UnregisteredLocaleException("Null locale when attempting to fetch text id: $textID")
         }
         return if (locale == this.locale) {
-            currentLocaleData[textID]
+            currentLocaleData?.get(textID)
         } else {
             getLocaleMap(locale)[textID]
         }
