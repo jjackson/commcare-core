@@ -24,7 +24,7 @@ import java.util.Vector
  *
  * @author ctsims
  */
-abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
+abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
 
     /**
      * The integer Id of the model

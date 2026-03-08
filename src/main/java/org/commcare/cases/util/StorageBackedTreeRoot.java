@@ -31,7 +31,7 @@ import java.util.Vector;
 /**
  * @author ctsims
  */
-public abstract class StorageBackedTreeRoot<T extends AbstractTreeElement> implements AbstractTreeElement<T> {
+public abstract class StorageBackedTreeRoot<T extends AbstractTreeElement<T>> implements AbstractTreeElement<T> {
 
     protected QueryPlanner queryPlanner;
     protected BasicStorageBackedCachingQueryHandler defaultCacher;

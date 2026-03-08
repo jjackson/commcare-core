@@ -8,7 +8,7 @@ import org.javarosa.core.model.instance.AbstractTreeElement;
  * Created by ctsims on 9/19/2017.
  */
 
-public interface QuerySensitiveTreeElement<T extends AbstractTreeElement> extends AbstractTreeElement<T> {
+public interface QuerySensitiveTreeElement<T extends AbstractTreeElement<T>> extends AbstractTreeElement<T> {
 
     /**
      * Retrieves the TreeElement representing the attribute at

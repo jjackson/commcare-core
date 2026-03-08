@@ -18,11 +18,11 @@ import java.util.Vector;
  * Created by ctsims on 9/19/2017.
  */
 
-public class QuerySensitiveTreeElementWrapper<T extends AbstractTreeElement> implements AbstractTreeElement<T>{
+public class QuerySensitiveTreeElementWrapper<T extends AbstractTreeElement<T>> implements AbstractTreeElement<T>{
     QuerySensitiveTreeElement<T> wrapped;
     QueryContext context;
 
-    public static <T extends AbstractTreeElement> AbstractTreeElement<T> WrapWithContext(AbstractTreeElement<T> element, QueryContext context) {
+    public static <T extends AbstractTreeElement<T>> AbstractTreeElement<T> WrapWithContext(AbstractTreeElement<T> element, QueryContext context) {
         if (context == null) { return element; }
         if (element instanceof QuerySensitiveTreeElement) {
             return new QuerySensitiveTreeElementWrapper<>((QuerySensitiveTreeElement<T>)element, context);
