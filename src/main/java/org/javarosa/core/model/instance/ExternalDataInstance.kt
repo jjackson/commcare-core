@@ -92,7 +92,7 @@ open class ExternalDataInstance : DataInstance<AbstractTreeElement<*>> {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         super.readExternal(`in`, pf)
         reference = ExtUtil.readString(`in`)
         source = ExtUtil.read(
@@ -104,7 +104,7 @@ open class ExternalDataInstance : DataInstance<AbstractTreeElement<*>> {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         super.writeExternal(out)
-        ExtUtil.writeString(out, reference)
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(reference))
         ExtUtil.write(out, ExtWrapNullable(source))
     }
 

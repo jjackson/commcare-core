@@ -160,7 +160,7 @@ class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         super.readExternal(`in`, pf)
         schema = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
         dateSaved = ExtUtil.read(`in`, ExtWrapNullable(Date::class.java), pf) as Date?

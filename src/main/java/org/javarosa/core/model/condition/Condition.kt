@@ -54,7 +54,7 @@ class Condition : Triggerable {
 
     override fun apply(ref: TreeReference?, result: Any?, instance: FormInstance?, f: FormDef?) {
         val boolResult = result as Boolean
-        performAction(instance!!.resolveReference(ref), if (boolResult) trueAction else falseAction)
+        performAction(instance!!.resolveReference(ref)!!, if (boolResult) trueAction else falseAction)
     }
 
     override fun canCascade(): Boolean {
@@ -98,7 +98,7 @@ class Condition : Triggerable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(input: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(input: DataInputStream, pf: PrototypeFactory) {
         super.readExternal(input, pf)
         trueAction = ExtUtil.readInt(input)
         falseAction = ExtUtil.readInt(input)
@@ -107,8 +107,8 @@ class Condition : Triggerable {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         super.writeExternal(out)
-        ExtUtil.writeNumeric(out, trueAction)
-        ExtUtil.writeNumeric(out, falseAction)
+        ExtUtil.writeNumeric(out, trueAction.toLong())
+        ExtUtil.writeNumeric(out, falseAction.toLong())
     }
 
     override fun getDebugLabel(): String {

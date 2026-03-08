@@ -98,25 +98,25 @@ class Selection : Externalizable {
     }
 
     fun attachChoice(q: QuestionDef) {
-        if (q.dynamicChoices != null) {
+        if (q.getDynamicChoices() != null) {
             // can't attach dynamic choices because they aren't guaranteed to exist yet
             return
         }
 
         var choice: SelectChoice? = null
 
-        if (index != -1 && index < q.numChoices) {
+        if (index != -1 && index < q.getNumChoices()) {
             choice = q.getChoice(index)
         } else if (xmlValue != null && xmlValue!!.isNotEmpty()) {
-            choice = q.getChoiceForValue(xmlValue)
+            choice = q.getChoiceForValue(xmlValue!!)
         }
 
         if (choice != null) {
             attachChoice(choice)
         } else {
-            var questionText = q.textID
+            var questionText = q.getTextID()
             if (StringUtils.isEmpty(questionText)) {
-                questionText = q.bind.reference.toString()
+                questionText = q.getBind()!!.reference.toString()
             }
             throw XPathTypeMismatchException(
                 "value " + xmlValue + " could not be loaded into question " + questionText

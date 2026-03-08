@@ -39,7 +39,7 @@ class QuestionString : Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         name = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
         textId = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
         textInner = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?

@@ -98,7 +98,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     /**
      * Secondary and external instance pointers
      */
-    private var formInstances: Hashtable<String, DataInstance> = Hashtable()
+    private var formInstances: Hashtable<String, DataInstance<*>> = Hashtable()
 
     private var mainInstance: FormInstance? = null
 
@@ -144,22 +144,22 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     /**
      * Getters and setters for the vectors
      */
-    fun addNonMainInstance(instance: DataInstance) {
-        formInstances[instance.instanceId] = instance
+    fun addNonMainInstance(instance: DataInstance<*>) {
+        formInstances[instance.getInstanceId()] = instance
         this.setEvaluationContext(EvaluationContext(null))
     }
 
     /**
      * Get an instance based on a name
      */
-    fun getNonMainInstance(name: String?): DataInstance? {
+    fun getNonMainInstance(name: String?): DataInstance<*>? {
         if (!formInstances.containsKey(name)) {
             return null
         }
         return formInstances[name]
     }
 
-    fun getNonMainInstances(): java.util.Enumeration<DataInstance> {
+    fun getNonMainInstances(): java.util.Enumeration<DataInstance<*>> {
         return formInstances.elements()
     }
 
@@ -185,7 +185,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     }
 
     // ---------- child elements
-    override fun addChild(fe: IFormElement) {
+    override fun addChild(fe: IFormElement?) {
         this.children.addElement(fe)
     }
 
@@ -201,8 +201,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     fun getChild(index: FormIndex?): IFormElement {
         var currentIndex = index
         var element: IFormElement = this
-        while (currentIndex != null && currentIndex.isInForm) {
-            element = element.getChild(currentIndex.localIndex)
+        while (currentIndex != null && currentIndex.isInForm()) {
+            element = element.getChild(currentIndex.getLocalIndex())!!
             currentIndex = currentIndex.nextLevel
         }
         return element
@@ -248,7 +248,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         }
 
         // get reference for target element
-        val ref = FormInstance.unpackReference(elements.lastElement().bind).clone()
+        val ref = DataInstance.unpackReference(elements.lastElement().getBind()!!).clone()
         for (i in 0 until ref.size()) {
             // There has to be a better way to encapsulate this
             if (ref.getMultiplicity(i) != TreeReference.INDEX_ATTRIBUTE) {
@@ -259,8 +259,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         // fill in multiplicities for repeats along the way
         for (i in 0 until elements.size) {
             val temp = elements.elementAt(i)
-            if (temp is GroupDef && temp.isRepeat) {
-                val repRef = FormInstance.unpackReference(temp.bind)
+            if (temp is GroupDef && temp.isRepeat()) {
+                val repRef = DataInstance.unpackReference(temp.getBind()!!)
                 if (repRef.isParentOf(ref, false)) {
                     val repMult = multiplicities.elementAt(i)
                     ref.setMultiplicity(repRef.size() - 1, repMult)
@@ -285,7 +285,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     }
 
     fun setValue(data: IAnswerData?, ref: TreeReference) {
-        setValue(data, ref, mainInstance!!.resolveReference(ref))
+        setValue(data, ref, mainInstance!!.resolveReference(ref)!!)
     }
 
     fun setValue(data: IAnswerData?, ref: TreeReference, node: TreeElement) {
@@ -295,7 +295,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     }
 
     fun setAnswer(data: IAnswerData?, ref: TreeReference) {
-        setAnswer(data, mainInstance!!.resolveReference(ref))
+        setAnswer(data, mainInstance!!.resolveReference(ref)!!)
     }
 
     fun setAnswer(data: IAnswerData?, node: TreeElement) {
@@ -318,7 +318,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         // TODO: should probably check to make sure size > 0
         for (i in elements.size - 1 downTo 0) {
             val e = elements.elementAt(i)
-            if (e is GroupDef && e.isRepeat) {
+            if (e is GroupDef && e.isRepeat()) {
                 break
             } else {
                 indexes.removeElementAt(i)
@@ -332,9 +332,9 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         val newIndex = buildIndex(indexes, multiplicities, elements)
 
         val deleteRef = getChildInstanceRef(newIndex)!!
-        val deleteElement = mainInstance!!.resolveReference(deleteRef)
-        val parentRef = deleteRef.parentRef
-        val parentElement = mainInstance!!.resolveReference(parentRef)
+        val deleteElement = mainInstance!!.resolveReference(deleteRef)!!
+        val parentRef = deleteRef.getParentRef()!!
+        val parentElement = mainInstance!!.resolveReference(parentRef)!!
 
         parentElement.removeChild(deleteElement)
 
@@ -351,14 +351,14 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
      * by one.
      */
     private fun reduceTreeSiblingMultiplicities(parentElement: TreeElement, deleteElement: TreeElement) {
-        val childMult = deleteElement.mult
+        val childMult = deleteElement.getMult()
         // update multiplicities of other child nodes
-        for (i in 0 until parentElement.numChildren) {
+        for (i in 0 until parentElement.getNumChildren()) {
             val child = parentElement.getChildAt(i)
             // We also need to check that this element matches the deleted element (besides multiplicity)
             // in the case where the deleted repeat's parent isn't a subgroup
-            if (child.doFieldsMatch(deleteElement) && child.mult > childMult) {
-                child.setMult(child.mult - 1)
+            if (child!!.doFieldsMatch(deleteElement) && child.getMult() > childMult) {
+                child.setMult(child.getMult() - 1)
             }
         }
     }
@@ -366,7 +366,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     @Throws(InvalidReferenceException::class)
     fun createNewRepeat(index: FormIndex) {
         val repeatContextRef = getChildInstanceRef(index)!!
-        val template = mainInstance!!.getTemplate(repeatContextRef)
+        val template = mainInstance!!.getTemplate(repeatContextRef)!!
 
         mainInstance!!.copyNode(template, repeatContextRef)
 
@@ -403,10 +403,10 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
 
         // check the relevancy of the immediate parent
         if (relev) {
-            val templNode = mainInstance!!.getTemplate(repeatRef)
-            val parentPath = templNode.parent.ref.genericize()
+            val templNode = mainInstance!!.getTemplate(repeatRef)!!
+            val parentPath = templNode.getParent()!!.getRef().genericize()
             val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(repeatRef))
-            relev = parentNode.isRelevant
+            relev = parentNode!!.isRelevant
         }
 
         return relev
@@ -423,8 +423,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         if (repeat.noAddRemove) {
             // Check to see if there's a count to use to determine how many children this repeat
             // should have
-            if (repeat.countReference != null) {
-                val currentMultiplicity = repeatIndex.elementMultiplicity
+            if (repeat.getCountReference() != null) {
+                val currentMultiplicity = repeatIndex.getElementMultiplicity()
 
                 val absPathToCount = repeat.getConextualizedCountReference(repeatRef)
                 val countNode = this.getMainInstance()!!.resolveReference(absPathToCount)
@@ -434,17 +434,17 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
                                 repeatRef.toString(false) + " is looking for its count"
                     )
                 // get the total multiplicity possible
-                val boxedCount = countNode.value
+                val boxedCount = countNode.getValue()
                 val count: Int
                 if (boxedCount == null) {
                     count = 0
                 } else {
                     try {
-                        count = IntegerData().cast(boxedCount.uncast()).value as Int
+                        count = IntegerData().cast(boxedCount.uncast())!!.getValue() as Int
                     } catch (iae: IllegalArgumentException) {
                         throw XPathTypeMismatchException(
                             "The repeat count value \"" +
-                                    boxedCount.uncast().string +
+                                    boxedCount.uncast().getString() +
                                     "\" at " + absPathToCount.toString() +
                                     " must be a number!"
                         )
@@ -468,35 +468,35 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
 
     @Throws(InvalidReferenceException::class)
     fun copyItemsetAnswer(q: QuestionDef, targetNode: TreeElement, data: IAnswerData) {
-        val itemset = q.dynamicChoices
-        val targetRef = targetNode.ref
-        val destRef = itemset.destRef.contextualize(targetRef)
+        val itemset = q.getDynamicChoices()!!
+        val targetRef = targetNode.getRef()
+        val destRef = itemset.getDestRef()!!.contextualize(targetRef)
 
         var selections: Vector<Selection>? = null
         val selectedValues = Vector<String>()
         if (data is SelectMultiData) {
             @Suppress("UNCHECKED_CAST")
-            selections = data.value as Vector<Selection>
+            selections = data.getValue() as Vector<Selection>
         } else if (data is SelectOneData) {
             selections = Vector()
-            selections.addElement(data.value as Selection)
+            selections.addElement(data.getValue() as Selection)
         }
         if (itemset.valueRef != null) {
             for (i in 0 until selections!!.size) {
-                selectedValues.addElement(selections.elementAt(i).choice.value)
+                selectedValues.addElement(selections.elementAt(i).choice!!.value)
             }
         }
 
         // delete existing dest nodes that are not in the answer selection
         val existingValues = Hashtable<String, TreeElement>()
-        val existingNodes = exprEvalContext!!.expandReference(destRef)
+        val existingNodes = exprEvalContext!!.expandReference(destRef)!!
         for (i in 0 until existingNodes.size) {
-            val node = getMainInstance()!!.resolveReference(existingNodes.elementAt(i))
+            val node = getMainInstance()!!.resolveReference(existingNodes.elementAt(i))!!
 
             if (itemset.valueRef != null) {
-                val value = itemset.relativeValue.evalReadable(
+                val value = itemset.getRelativeValue()!!.evalReadable(
                     this.getMainInstance(),
-                    EvaluationContext(exprEvalContext, node.ref)
+                    EvaluationContext(exprEvalContext, node.getRef())
                 )
                 if (selectedValues.contains(value)) {
                     existingValues[value] = node // cache node if in selection and already exists
@@ -510,7 +510,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         // copy in nodes for new answer; preserve ordering in answer
         for (i in 0 until selections!!.size) {
             val s = selections.elementAt(i)
-            val ch = s.choice
+            val ch = s.choice!!
 
             var cachedNode: TreeElement? = null
             if (itemset.valueRef != null) {
@@ -524,7 +524,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
                 cachedNode.setMult(i)
                 targetNode.addChild(cachedNode)
             } else {
-                getMainInstance()!!.copyItemsetNode(ch.copyNode, destRef, this)
+                getMainInstance()!!.copyItemsetNode(ch.copyNode!!, destRef, this)
             }
         }
 
@@ -547,7 +547,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
 
             val existingTriggerable = triggerables!![existingIx]
 
-            existingTriggerable.contextRef = existingTriggerable.contextRef.intersect(t.contextRef)
+            existingTriggerable.contextRef = existingTriggerable.contextRef!!.intersect(t.contextRef!!)
 
             return existingTriggerable
 
@@ -560,7 +560,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             // sorting has been disrupted
             triggerables!!.add(t)
 
-            for (trigger in t.triggers) {
+            for (trigger in t.getTriggers()) {
                 val predicatelessTrigger = t.widenContextToAndClearPredicates(trigger)
                 if (!triggerIndex!!.containsKey(predicatelessTrigger)) {
                     triggerIndex!![predicatelessTrigger.clone()] = Vector()
@@ -669,7 +669,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
                 }
             }
         }
-        throw IllegalStateException(ShortestCycleAlgorithm(edges).cycleErrorMessage)
+        throw IllegalStateException(ShortestCycleAlgorithm(edges).getCycleErrorMessage())
     }
 
     private fun setOrderOfTriggerable(
@@ -719,7 +719,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
                 // Repeat sub-elements have already been added to 'destination'
                 // when we grabbed all triggerables that target children of the
                 // repeat entry (via initTriggerablesRootedBy). Hence skip them
-                if (!isRepeatEntryInit && t.isCascadingToChildren) {
+                if (!isRepeatEntryInit && t.isCascadingToChildren()) {
                     updatedNodes = findCascadeReferences(target, updatedNodes)
                 }
 
@@ -739,12 +739,12 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         var nodes = updatedNodes
         val cachedNodes = cachedCascadingChildren.retrieve(target)
         if (cachedNodes == null) {
-            if (target.multLast == TreeReference.INDEX_ATTRIBUTE) {
+            if (target.getMultLast() == TreeReference.INDEX_ATTRIBUTE) {
                 // attributes don't have children that might change under
                 // contextualization
                 cachedCascadingChildren.register(target, nodes)
             } else {
-                val expandedRefs = exprEvalContext!!.expandReference(target, true)
+                val expandedRefs = exprEvalContext!!.expandReference(target, true)!!
                 if (expandedRefs.size > 0) {
                     val template = mainInstance!!.getTemplatePath(target)
                     if (template != null) {
@@ -770,7 +770,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         genericRefs: MutableList<TreeReference>
     ) {
         for (ref in expandedRefs) {
-            addChildrenOfElement(exprEvalContext!!.resolveReference(ref), genericRefs)
+            addChildrenOfElement(exprEvalContext!!.resolveReference(ref)!!, genericRefs)
         }
     }
 
@@ -841,12 +841,12 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         val debugInfo = Hashtable<TreeReference, Hashtable<String, EvaluationTrace>>()
 
         for (t in triggerables!!) {
-            val triggerOutputs = t.evaluationTraces
+            val triggerOutputs = t.getEvaluationTraces()
 
             val e = triggerOutputs.keys()
             while (e.hasMoreElements()) {
                 val elementRef = e.nextElement() as TreeReference
-                val label = t.debugLabel
+                val label = t.getDebugLabel()
                 var traces = debugInfo[elementRef]
                 if (traces == null) {
                     traces = Hashtable()
@@ -959,7 +959,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
 
         // Now identify all of the fully qualified nodes which this triggerable
         // updates. (Multiple nodes can be updated by the same trigger)
-        val expandedReferences = exprEvalContext!!.expandReference(contextRef)
+        val expandedReferences = exprEvalContext!!.expandReference(contextRef)!!
 
         for (treeReference in expandedReferences) {
             triggerable.apply(mainInstance, exprEvalContext, treeReference, this)
@@ -975,13 +975,13 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             return true
         }
 
-        val node = mainInstance!!.resolveReference(ref)
-        val c = node.constraint ?: return true
+        val node = mainInstance!!.resolveReference(ref)!!
+        val c = node.getConstraint() ?: return true
         val ec = EvaluationContext(exprEvalContext, ref)
         ec.isConstraint = true
         ec.candidateValue = data
 
-        return c.constraint.eval(mainInstance, ec)
+        return c.constraint!!.eval(mainInstance, ec)
     }
 
     fun setEvaluationContext(ec: EvaluationContext) {
@@ -998,18 +998,18 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     }
 
     private fun initEvalContext(ec: EvaluationContext) {
-        if (!ec.functionHandlers.containsKey("jr:itext")) {
+        if (!ec.getFunctionHandlers().containsKey("jr:itext")) {
             val f = this
             ec.addFunctionHandler(object : IFunctionHandler {
                 override fun getName(): String {
                     return "jr:itext"
                 }
 
-                override fun eval(args: Array<Any>, ec: EvaluationContext): Any {
-                    var textID = args[0] as String
+                override fun eval(args: Array<Any?>?, ec: EvaluationContext?): Any {
+                    var textID = args!![0] as String
                     try {
                         // SUUUUPER HACKY
-                        val form = ec.outputTextForm
+                        val form = ec!!.getOutputTextForm()
                         if (form != null) {
                             textID = "$textID;$form"
                             val result = f.getLocalizer()!!.getRawText(f.getLocalizer()!!.locale, textID)
@@ -1037,30 +1037,30 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         }
 
         /* function to reverse a select value into the display label for that choice in the question it came from */
-        if (!ec.functionHandlers.containsKey("jr:choice-name")) {
+        if (!ec.getFunctionHandlers().containsKey("jr:choice-name")) {
             val f = this
             ec.addFunctionHandler(object : IFunctionHandler {
                 override fun getName(): String {
                     return "jr:choice-name"
                 }
 
-                override fun eval(args: Array<Any>, ec: EvaluationContext): Any {
+                override fun eval(args: Array<Any?>?, ec: EvaluationContext?): Any {
                     try {
-                        val value = args[0] as String
+                        val value = args!![0] as String
                         val questionXpath = args[1] as String
                         val ref = RestoreUtils.ref(questionXpath)
 
                         val q = findQuestionByRef(ref, f)
                             ?: return ""
-                        if (q.controlType != Constants.CONTROL_SELECT_ONE &&
-                            q.controlType != Constants.CONTROL_SELECT_MULTI
+                        if (q.getControlType() != Constants.CONTROL_SELECT_ONE &&
+                            q.getControlType() != Constants.CONTROL_SELECT_MULTI
                         ) {
                             return ""
                         }
 
                         System.out.println("here!!")
 
-                        val choices = q.choices
+                        val choices = q.getChoices()!!
                         for (ch in choices) {
                             if (ch.value == value) {
                                 val textID = ch.textID
@@ -1233,7 +1233,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         @Suppress("UNCHECKED_CAST")
         formInstances = ExtUtil.read(
             dis, ExtWrapMap(String::class.java, ExtWrapTagged()), pf
-        ) as Hashtable<String, DataInstance>
+        ) as Hashtable<String, DataInstance<*>>
 
         @Suppress("UNCHECKED_CAST")
         extensions = ExtUtil.read(dis, ExtWrapListPoly(), pf) as Vector<XFormExtension>
@@ -1344,19 +1344,19 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         multiplicities: Vector<Int>,
         elements: Vector<IFormElement>
     ) {
-        if (!index.isInForm) {
+        if (!index.isInForm()) {
             return
         }
 
         var element: IFormElement = this
         var currentIndex: FormIndex? = index
         while (currentIndex != null) {
-            val i = currentIndex.localIndex
-            element = element.getChild(i)
+            val i = currentIndex.getLocalIndex()
+            element = element.getChild(i)!!
 
             indexes.addElement(DataUtil.integer(i))
             multiplicities.addElement(
-                DataUtil.integer(if (currentIndex.instanceIndex == -1) 0 else currentIndex.instanceIndex)
+                DataUtil.integer(if (currentIndex.getInstanceIndex() == -1) 0 else currentIndex.getInstanceIndex())
             )
             elements.addElement(element)
 
@@ -1384,7 +1384,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             val ix = indexes.elementAt(i)
             var mult = multiplicities.elementAt(i)
 
-            if (!(elements.elementAt(i) is GroupDef && (elements.elementAt(i) as GroupDef).isRepeat)) {
+            if (!(elements.elementAt(i) is GroupDef && (elements.elementAt(i) as GroupDef).isRepeat())) {
                 mult = -1
             }
 
@@ -1400,21 +1400,21 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         val multiplicities = Vector<Int>()
         val elements = Vector<IFormElement>()
 
-        if (!index.isInForm) {
+        if (!index.isInForm()) {
             throw RuntimeException("not an in-form index")
         }
 
         collapseIndex(index, indexes, multiplicities, elements)
 
-        if (elements.lastElement() !is GroupDef || !(elements.lastElement() as GroupDef).isRepeat) {
+        if (elements.lastElement() !is GroupDef || !(elements.lastElement() as GroupDef).isRepeat()) {
             throw RuntimeException("current element not a repeat")
         }
 
         // so painful
-        val templNode = mainInstance!!.getTemplate(index.reference)
-        val parentPath = templNode.parent.ref.genericize()
-        val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(index.reference))
-        return parentNode.getChildMultiplicity(templNode.name)
+        val templNode = mainInstance!!.getTemplate(index.getReference()!!)!!
+        val parentPath = templNode.getParent()!!.getRef().genericize()
+        val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(index.getReference()!!))
+        return parentNode!!.getChildMultiplicity(templNode.getName()!!)
     }
 
     // repIndex == -1 => next repetition about to be created
@@ -1444,7 +1444,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         var total = 0
         val e = children.elements()
         while (e.hasMoreElements()) {
-            total += (e.nextElement() as IFormElement).deepChildCount
+            total += (e.nextElement() as IFormElement).getDeepChildCount()
         }
         return total
     }
@@ -1493,9 +1493,9 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         this.outputFragments = outputFragments
     }
 
-    override fun getMetaData(fieldName: String): Any? {
+    override fun getMetaData(fieldName: String): Any {
         if (fieldName == "DESCRIPTOR") {
-            return name
+            return name ?: ""
         }
         if (fieldName == "XMLNS") {
             return ExtUtil.emptyIfNull(mainInstance!!.schema)
@@ -1512,29 +1512,29 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
      * Link a deserialized instance back up with its parent FormDef.
      */
     fun attachControlsToInstanceData() {
-        attachControlsToInstanceData(getMainInstance()!!.root)
+        attachControlsToInstanceData(getMainInstance()!!.getRoot()!!)
     }
 
     private fun attachControlsToInstanceData(node: TreeElement) {
-        for (i in 0 until node.numChildren) {
-            attachControlsToInstanceData(node.getChildAt(i))
+        for (i in 0 until node.getNumChildren()) {
+            attachControlsToInstanceData(node.getChildAt(i)!!)
         }
 
-        val `val` = node.value
+        val `val` = node.getValue()
         var selections: Vector<Any?>? = null
         if (`val` is SelectOneData) {
             selections = Vector()
-            selections.addElement(`val`.value)
+            selections.addElement(`val`.getValue())
         } else if (`val` is SelectMultiData) {
             @Suppress("UNCHECKED_CAST")
-            selections = `val`.value as Vector<Any?>
+            selections = `val`.getValue() as Vector<Any?>
         }
 
         if (selections != null) {
-            val q = findQuestionByRef(node.ref, this)
+            val q = findQuestionByRef(node.getRef(), this)
                 ?: throw RuntimeException("FormDef.attachControlsToInstanceData: can't find question to link")
 
-            if (q.dynamicChoices != null) {
+            if (q.getDynamicChoices() != null) {
                 // droos: i think we should do something like initializing the itemset here, so that default answers
                 // can be linked to the selectchoices.
                 // itemset TODO
@@ -1559,7 +1559,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
      * Appearance isn't a valid attribute for form, but this method must be included
      * as a result of conforming to the IFormElement interface.
      */
-    override fun setAppearanceAttr(appearanceAttr: String) {
+    override fun setAppearanceAttr(appearanceAttr: String?) {
         throw RuntimeException("This method call is not relevant for FormDefs setAppearanceAttr()")
     }
 
@@ -1584,7 +1584,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     /**
      * Not applicable
      */
-    override fun setTextID(textID: String) {
+    override fun setTextID(textID: String?) {
         throw RuntimeException("This method call is not relevant for FormDefs [setTextID()]")
     }
 
@@ -1652,8 +1652,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     // Checks if the form element at given form Index belongs to a non counted repeat
     fun isNonCountedRepeat(formIndex: FormIndex): Boolean {
         val currentElement = getChild(formIndex)
-        if (currentElement is GroupDef && currentElement.isRepeat) {
-            return currentElement.countReference == null
+        if (currentElement is GroupDef && currentElement.isRepeat()) {
+            return currentElement.getCountReference() == null
         }
         return false
     }
@@ -1675,10 +1675,10 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             }
 
             if (fe is QuestionDef) {
-                val bind = FormInstance.unpackReference(fe.bind)
+                val bind = DataInstance.unpackReference(fe.getBind()!!)
                 return if (currentRef == bind) fe else null
             } else {
-                for (i in 0 until fe.children.size) {
+                for (i in 0 until fe.getChildren()!!.size) {
                     val ret = findQuestionByRef(currentRef, fe.getChild(i))
                     if (ret != null)
                         return ret
@@ -1710,9 +1710,9 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             genericRefs: MutableList<TreeReference>
         ) {
             // recursively add children of element
-            for (i in 0 until treeElem.numChildren) {
-                val child = treeElem.getChildAt(i)
-                val genericChild = child.ref.genericize()
+            for (i in 0 until treeElem.getNumChildren()) {
+                val child = treeElem.getChildAt(i)!!
+                val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)
                 }
@@ -1722,8 +1722,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             // add all the attributes of this element
             for (i in 0 until treeElem.attributeCount) {
                 val child =
-                    treeElem.getAttribute(treeElem.getAttributeNamespace(i), treeElem.getAttributeName(i))
-                val genericChild = child.ref.genericize()
+                    treeElem.getAttribute(treeElem.getAttributeNamespace(i), treeElem.getAttributeName(i))!!
+                val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)
                 }

@@ -23,10 +23,10 @@ object GeoPointUtils {
     @JvmStatic
     fun computeDistanceBetween(from: GeoPointData, to: GeoPointData): Double {
         return EARTH_RADIUS * distanceRadians(
-            Math.toRadians(from.latitude),
-            Math.toRadians(from.longitude),
-            Math.toRadians(to.latitude),
-            Math.toRadians(to.longitude)
+            Math.toRadians(from.getLatitude()),
+            Math.toRadians(from.getLongitude()),
+            Math.toRadians(to.getLatitude()),
+            Math.toRadians(to.getLongitude())
         )
     }
 

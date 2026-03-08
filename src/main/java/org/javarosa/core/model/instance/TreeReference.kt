@@ -509,7 +509,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
                 mult = 0
             }
 
-            hash = hash xor getName(i).hashCode()
+            hash = hash xor (getName(i)?.hashCode() ?: 0)
             hash = hash xor mult
 
             val predicates = this.getPredicate(i)
@@ -583,7 +583,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         refLevel = ExtUtil.readInt(`in`)
         instanceName = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
         contextType = ExtUtil.readInt(`in`)
@@ -596,10 +596,10 @@ class TreeReference : Externalizable, XPathAnalyzable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeNumeric(out, refLevel)
+        ExtUtil.writeNumeric(out, refLevel.toLong())
         ExtUtil.write(out, ExtWrapNullable(instanceName))
-        ExtUtil.writeNumeric(out, contextType)
-        ExtUtil.writeNumeric(out, size())
+        ExtUtil.writeNumeric(out, contextType.toLong())
+        ExtUtil.writeNumeric(out, size().toLong())
         for (l in data!!) {
             ExtUtil.write(out, l)
         }

@@ -471,7 +471,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         name = ExtUtil.nullIfEmpty(ExtUtil.readString(`in`))
         multiplicity = ExtUtil.readInt(`in`)
         flags = ExtUtil.readInt(`in`)
@@ -526,13 +526,13 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(name))
-        ExtUtil.writeNumeric(out, multiplicity)
-        ExtUtil.writeNumeric(out, flags)
+        ExtUtil.writeNumeric(out, multiplicity.toLong())
+        ExtUtil.writeNumeric(out, flags.toLong())
         ExtUtil.write(out, ExtWrapNullable(if (value == null) null else ExtWrapTagged(value)))
 
         writeChildrenToExternal(out)
 
-        ExtUtil.writeNumeric(out, dataType)
+        ExtUtil.writeNumeric(out, dataType.toLong())
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceName))
         ExtUtil.write(out, ExtWrapNullable(constraint)) // TODO: inefficient for repeats
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(preloadHandler))
@@ -548,7 +548,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
             ExtUtil.writeBool(out, false)
         } else {
             ExtUtil.writeBool(out, true)
-            ExtUtil.writeNumeric(out, children!!.size)
+            ExtUtil.writeNumeric(out, children!!.size.toLong())
             val en = children!!.elements()
             while (en.hasMoreElements()) {
                 val child = en.nextElement() as TreeElement
@@ -563,7 +563,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
             ExtUtil.writeBool(out, false)
         } else {
             ExtUtil.writeBool(out, true)
-            ExtUtil.writeNumeric(out, attributes!!.size)
+            ExtUtil.writeNumeric(out, attributes!!.size.toLong())
             val en = attributes!!.elements()
             while (en.hasMoreElements()) {
                 val attr = en.nextElement() as TreeElement

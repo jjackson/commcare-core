@@ -39,8 +39,9 @@ class Recalculate : Triggerable {
     }
 
     override fun apply(ref: TreeReference?, result: Any?, instance: FormInstance?, f: FormDef?) {
-        val dataType = f!!.mainInstance.resolveReference(ref).dataType
-        f.setAnswer(wrapData(result, dataType), ref)
+        val currentRef = ref!!
+        val dataType = f!!.getMainInstance()!!.resolveReference(currentRef)!!.getDataType()
+        f.setAnswer(wrapData(result, dataType), currentRef)
     }
 
     override fun canCascade(): Boolean {

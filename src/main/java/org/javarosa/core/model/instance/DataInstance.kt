@@ -255,7 +255,7 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         recordid = ExtUtil.readInt(`in`)
         formId = ExtUtil.readInt(`in`)
         name = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
@@ -264,8 +264,8 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeNumeric(out, recordid)
-        ExtUtil.writeNumeric(out, formId)
+        ExtUtil.writeNumeric(out, recordid.toLong())
+        ExtUtil.writeNumeric(out, formId.toLong())
         ExtUtil.write(out, ExtWrapNullable(name))
         ExtUtil.write(out, ExtUtil.emptyIfNull(instanceid))
     }

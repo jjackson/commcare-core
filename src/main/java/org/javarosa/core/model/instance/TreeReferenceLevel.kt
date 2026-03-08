@@ -68,7 +68,7 @@ class TreeReferenceLevel : Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         name = ExtUtil.nullIfEmpty(ExtUtil.readString(`in`))
         multiplicity = ExtUtil.readInt(`in`)
         @Suppress("UNCHECKED_CAST")
@@ -80,7 +80,7 @@ class TreeReferenceLevel : Externalizable {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(name))
-        ExtUtil.writeNumeric(out, multiplicity)
+        ExtUtil.writeNumeric(out, multiplicity.toLong())
         ExtUtil.write(out, ExtWrapListPoly(ExtUtil.emptyIfNull(predicates)))
     }
 

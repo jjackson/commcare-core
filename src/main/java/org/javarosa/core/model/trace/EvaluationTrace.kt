@@ -55,7 +55,7 @@ open class EvaluationTrace(private val expression: String) {
         runtimeNano = System.nanoTime() - exprStartNano
     }
 
-    protected open fun getRuntimeInNanoseconds(): Long {
+    open fun getRuntimeInNanoseconds(): Long {
         return runtimeNano
     }
 

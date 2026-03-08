@@ -30,8 +30,8 @@ object InstrumentationUtils {
                 println(description)
             }
 
-            for (trace in reporter.collectedTraces) {
-                println("${trace.expression}: ${trace.value}")
+            for (trace in reporter.getCollectedTraces()) {
+                println("${trace.getExpression()}: ${trace.getValue()}")
                 print(TraceSerialization.serializeEvaluationTrace(trace, requestedInfo, reporter.reportAsFlat()))
             }
 
@@ -54,8 +54,8 @@ object InstrumentationUtils {
                 returnValue += description + "\n"
             }
 
-            for (trace in reporter.collectedTraces) {
-                returnValue += "${trace.expression}: ${trace.value}\n"
+            for (trace in reporter.getCollectedTraces()) {
+                returnValue += "${trace.getExpression()}: ${trace.getValue()}\n"
                 returnValue += TraceSerialization.serializeEvaluationTrace(
                     trace, requestedInfo, reporter.reportAsFlat()
                 )
@@ -73,10 +73,10 @@ object InstrumentationUtils {
                 println(description)
             }
 
-            for (trace in reporter.collectedTraces) {
+            for (trace in reporter.getCollectedTraces()) {
                 if (trace.evaluationUsedExpressionCache()) {
-                    println("${trace.expression}: ${trace.value}")
-                    println("    ${trace.cacheReport}")
+                    println("${trace.getExpression()}: ${trace.getValue()}")
+                    println("    ${trace.getCacheReport()}")
                 }
             }
         }
@@ -91,7 +91,7 @@ object InstrumentationUtils {
 
             val withCaching = mutableListOf<EvaluationTrace>()
             val withoutCaching = mutableListOf<EvaluationTrace>()
-            for (trace in reporter.collectedTraces) {
+            for (trace in reporter.getCollectedTraces()) {
                 if (trace.evaluationUsedExpressionCache()) {
                     withCaching.add(trace)
                 } else {
@@ -101,13 +101,13 @@ object InstrumentationUtils {
 
             println("EXPRESSIONS NEVER CACHED: ${withoutCaching.size}")
             for (trace in withoutCaching) {
-                println("${trace.expression}: ${trace.value}")
+                println("${trace.getExpression()}: ${trace.getValue()}")
             }
 
             println("EXPRESSIONS CACHED: ${withCaching.size}")
             for (trace in withCaching) {
-                println("${trace.expression}: ${trace.value}")
-                println("    ${trace.cacheReport}")
+                println("${trace.getExpression()}: ${trace.getValue()}")
+                println("    ${trace.getCacheReport()}")
             }
 
             reporter.reset()

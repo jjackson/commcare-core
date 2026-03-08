@@ -43,8 +43,8 @@ class SubmissionProfile : Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeString(out, resource)
-        ExtUtil.write(out, targetRef)
+        ExtUtil.writeString(out, resource!!)
+        ExtUtil.write(out, targetRef!!)
         ExtUtil.write(out, ExtWrapNullable(ref))
     }
 }

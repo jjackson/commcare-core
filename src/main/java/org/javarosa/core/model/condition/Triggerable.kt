@@ -142,7 +142,7 @@ abstract class Triggerable : Externalizable {
 
         for (baseTargetRef in targets) {
             val targetRef = baseTargetRef.contextualize(ec.contextRef)
-            val expandedReferences = ec.expandReference(targetRef)
+            val expandedReferences = ec.expandReference(targetRef) ?: continue
 
             for (affectedRef in expandedReferences) {
                 if (mIsDebugOn) {
@@ -235,7 +235,7 @@ abstract class Triggerable : Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(input: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(input: DataInputStream, pf: PrototypeFactory) {
         expr = ExtUtil.read(input, ExtWrapTagged(), pf) as IConditionExpr
         contextRef = ExtUtil.read(input, TreeReference::class.java, pf) as TreeReference
         originalContextRef = ExtUtil.read(input, TreeReference::class.java, pf) as TreeReference
@@ -246,11 +246,11 @@ abstract class Triggerable : Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, ExtWrapTagged(expr))
-        ExtUtil.write(out, contextRef)
-        ExtUtil.write(out, originalContextRef)
+        ExtUtil.write(out, ExtWrapTagged(expr!!))
+        ExtUtil.write(out, contextRef!!)
+        ExtUtil.write(out, originalContextRef!!)
         ExtUtil.write(out, ExtWrapList(targets))
-        ExtUtil.writeNumeric(out, stopContextualizingAt)
+        ExtUtil.writeNumeric(out, stopContextualizingAt.toLong())
     }
 
     override fun toString(): String {
@@ -314,7 +314,7 @@ abstract class Triggerable : Externalizable {
     fun updateStopContextualizingAtFromDominator(dominator: Triggerable) {
         if (dominator.stopContextualizingAt != -1 &&
             (stopContextualizingAt == -1 || dominator.stopContextualizingAt < stopContextualizingAt) &&
-            dominator.contextRef!!.intersect(contextRef).size() >= dominator.stopContextualizingAt) {
+            dominator.contextRef!!.intersect(contextRef!!).size() >= dominator.stopContextualizingAt) {
             stopContextualizingAt = dominator.stopContextualizingAt
         }
     }

@@ -104,7 +104,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         instanceId = ExtUtil.readString(`in`)
         useCaseTemplate = ExtUtil.readBool(`in`)
         sourceUri = ExtUtil.nullIfEmpty(ExtUtil.readString(`in`))
@@ -116,12 +116,12 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, instanceId)
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceId))
         ExtUtil.writeBool(out, useCaseTemplate)
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(sourceUri))
         ExtUtil.write(out, ExtWrapMultiMap(requestData))
         ExtUtil.write(out, ExtWrapNullable(storageReferenceId?.toString()))
-        ExtUtil.writeString(out, reference)
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(reference))
     }
 
     fun getInstanceId(): String? = instanceId

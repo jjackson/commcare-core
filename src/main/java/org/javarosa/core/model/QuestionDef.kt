@@ -208,10 +208,10 @@ class QuestionDef : IFormElement {
 
     @Throws(IOException::class)
     override fun writeExternal(dos: DataOutputStream) {
-        ExtUtil.writeNumeric(dos, getID())
+        ExtUtil.writeNumeric(dos, getID().toLong())
         ExtUtil.write(dos, ExtWrapNullable(if (binding == null) null else ExtWrapTagged(binding)))
         ExtUtil.write(dos, ExtWrapNullable(getAppearanceAttr()))
-        ExtUtil.writeNumeric(dos, getControlType())
+        ExtUtil.writeNumeric(dos, getControlType().toLong())
         ExtUtil.write(dos, ExtWrapList(ExtUtil.emptyIfNull(choices)))
         ExtUtil.write(dos, ExtWrapNullable(dynamicChoices))
         ExtUtil.write(dos, ExtWrapMap(mQuestionStrings))

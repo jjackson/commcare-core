@@ -79,7 +79,7 @@ class Constraint : Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(input: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(input: DataInputStream, pf: PrototypeFactory) {
         constraint = ExtUtil.read(input, ExtWrapTagged(), pf) as IConditionExpr
         constraintMsg = ExtUtil.nullIfEmpty(ExtUtil.readString(input))
         attemptConstraintCompile()
@@ -87,7 +87,7 @@ class Constraint : Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, ExtWrapTagged(constraint))
+        ExtUtil.write(out, ExtWrapTagged(constraint!!))
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(constraintMsg))
     }
 }

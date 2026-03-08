@@ -66,18 +66,18 @@ class SetValueAction : Action {
         }
 
         //TODO: either the target or the value's node might not exist here, catch and throw reasonably
-        val context = EvaluationContext(model.evaluationContext, targetReference)
+        val context = EvaluationContext(model.getEvaluationContext(), targetReference)
 
         val failMessage = "Target of TreeReference ${currentTarget.toString(true)} could not be resolved!"
 
         if (targetReference.hasPredicates()) {
             //CTS: in theory these predicates could contain logic which breaks if the qualified ref
             //contains unbound repeats (IE: nested repeats).
-            val references = context.expandReference(targetReference)
+            val references = context.expandReference(targetReference)!!
             if (references.size == 0) {
                 //If after finding our concrete reference it is a template, this action is outside of the
                 //scope of the current target, so we can leave.
-                if (model.mainInstance.hasTemplatePath(currentTarget)) {
+                if (model.getMainInstance()!!.hasTemplatePath(currentTarget)) {
                     return null
                 }
                 throw NullPointerException(failMessage)
@@ -96,7 +96,7 @@ class SetValueAction : Action {
             //an unbound template, so see if such a reference could exist. Unfortunately this
             //won't be included in the above walk if the template is nested, since only the
             //top level template retains its subelement templates
-            if (model.mainInstance.hasTemplatePath(currentTarget)) {
+            if (model.getMainInstance()!!.hasTemplatePath(currentTarget)) {
                 return null
             } else {
                 throw NullPointerException(failMessage)
@@ -107,13 +107,13 @@ class SetValueAction : Action {
         val result: Any? = if (currentExplicitValue != null) {
             currentExplicitValue
         } else {
-            FunctionUtils.unpack(value!!.eval(model.mainInstance, context))
+            FunctionUtils.unpack(value!!.eval(model.getMainInstance()!!, context))
         }
 
         //CTS: Is not clear whether we should be creating _another_ EC below with this newly qualified
         //ref or not. This logic used to come after the result was calculated.
 
-        val dataType = node.dataType
+        val dataType = node.getDataType()
         val value = Recalculate.wrapData(result, dataType)
 
         if (value == null) {

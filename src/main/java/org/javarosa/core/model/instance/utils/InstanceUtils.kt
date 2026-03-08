@@ -36,14 +36,17 @@ object InstanceUtils {
      */
     @JvmStatic
     fun setUpInstanceRoot(
-        instanceRoot: AbstractTreeElement<*>,
+        instanceRoot: AbstractTreeElement<*>?,
         instanceId: String?,
         instanceBase: InstanceBase?
     ) {
+        if (instanceRoot == null) {
+            return
+        }
         when (instanceRoot) {
             is TreeElement -> {
                 instanceRoot.setInstanceName(instanceId)
-                instanceRoot.parent = instanceBase
+                instanceRoot.setParent(instanceBase)
             }
             is CaseInstanceTreeElement -> {
                 instanceRoot.rebase(instanceBase)
@@ -66,9 +69,9 @@ object InstanceUtils {
     @JvmStatic
     fun getLimitedInstances(
         limitingList: Set<String>?,
-        instances: Hashtable<String, DataInstance>
-    ): Hashtable<String, DataInstance> {
-        val copy = Hashtable<String, DataInstance>()
+        instances: Hashtable<String, DataInstance<*>>
+    ): Hashtable<String, DataInstance<*>> {
+        val copy = Hashtable<String, DataInstance<*>>()
         val en = instances.keys()
         while (en.hasMoreElements()) {
             val key = en.nextElement()
@@ -76,11 +79,11 @@ object InstanceUtils {
             // This is silly, all of these are external data instances. TODO: save their
             // construction details instead.
             val cur = instances[key]
-            if (limitingList == null || limitingList.contains(cur?.instanceId)) {
+            if (limitingList == null || limitingList.contains(cur?.getInstanceId())) {
                 // Make sure we either aren't using a limiting list, or the instanceid is in the list
                 if (cur is ExternalDataInstance) {
                     // Copy the EDI so when it gets populated we don't keep it dependent on this object's lifecycle!!
-                    copy[key] = ExternalDataInstance(cur.reference, cur.instanceId)
+                    copy[key] = ExternalDataInstance(cur.getReference(), cur.getInstanceId())
                 } else if (cur != null) {
                     copy[key] = cur
                 }

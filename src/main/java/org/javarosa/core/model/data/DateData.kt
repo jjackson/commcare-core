@@ -31,7 +31,7 @@ class DateData : IAnswerData {
 
     private fun init() {
         if (!init) {
-            d = DateUtils.roundDate(d)
+            d = DateUtils.roundDate(d!!)
             init = true
         }
     }
@@ -78,7 +78,7 @@ class DateData : IAnswerData {
     }
 
     override fun cast(data: UncastData): DateData {
-        val ret = DateUtils.parseDate(data.value)
+        val ret = DateUtils.parseDate(data.value!!)
         if (ret != null) {
             return DateData(ret)
         }

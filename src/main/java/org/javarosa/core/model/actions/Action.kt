@@ -42,7 +42,7 @@ abstract class Action : Externalizable {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeString(out, name)
+        ExtUtil.writeString(out, name!!)
     }
 
     companion object {

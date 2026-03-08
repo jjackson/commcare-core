@@ -375,8 +375,8 @@ class FormIndex : Externalizable {
     override fun writeExternal(out: DataOutputStream) {
         ExtUtil.writeBool(out, beginningOfForm)
         ExtUtil.writeBool(out, endOfForm)
-        ExtUtil.writeNumeric(out, localIndex)
-        ExtUtil.writeNumeric(out, instanceIndex)
+        ExtUtil.writeNumeric(out, localIndex.toLong())
+        ExtUtil.writeNumeric(out, instanceIndex.toLong())
         ExtUtil.write(out, ExtWrapNullable(reference))
         ExtUtil.write(out, ExtWrapNullable(nextLevel))
     }

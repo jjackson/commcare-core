@@ -147,7 +147,7 @@ object TreeUtilities {
                             val children = childAttributeHintMap[left]?.get(literalMatch)
                             if (children != null) {
                                 for (element in children) {
-                                    predicateMatches.add(element.ref)
+                                    predicateMatches.add(element.getRef())
                                 }
                             }
                             // Merge and note that this predicate is evaluated and doesn't need to be evaluated
@@ -175,8 +175,8 @@ object TreeUtilities {
 
                         // Anything that we're going to use across elements should be on all of them
                         val kid = kids.elementAt(0)
-                        for (j in 0 until kid.attributeCount) {
-                            val attribute = kid.getAttributeName(j)
+                        for (j in 0 until kid.getAttributeCount()) {
+                            val attribute = kid.getAttributeName(j) ?: continue
                             val path = getXPathAttrExpression(attribute)
                             attributes.addElement(attribute)
                             indices.addElement(path)
@@ -203,7 +203,7 @@ object TreeUtilities {
                                 val value = FunctionUtils.InferType(attrValue)
 
                                 if (isEqOp == XPathEqExpr.testEquality(value, literalMatch)) {
-                                    predicateMatches.add(kids.elementAt(kidI).ref)
+                                    predicateMatches.add(kids.elementAt(kidI).getRef())
                                 }
                             }
 

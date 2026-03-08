@@ -63,7 +63,7 @@ class DateTimeData : IAnswerData {
     }
 
     override fun cast(data: UncastData): DateTimeData {
-        val ret = DateUtils.parseDateTime(data.value)
+        val ret = DateUtils.parseDateTime(data.value!!)
         if (ret != null) {
             return DateTimeData(ret)
         }

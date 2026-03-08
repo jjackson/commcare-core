@@ -56,7 +56,7 @@ class User : Persistable, Restorable, IMetaData {
 
     // fetch the value for the default user and password from the RMS
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         this.username = ExtUtil.readString(`in`)
         this.passwordHash = ExtUtil.readString(`in`)
         this.recordId = ExtUtil.readInt(`in`)
@@ -70,9 +70,9 @@ class User : Persistable, Restorable, IMetaData {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeString(out, username)
-        ExtUtil.writeString(out, passwordHash)
-        ExtUtil.writeNumeric(out, recordId)
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(username))
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(passwordHash))
+        ExtUtil.writeNumeric(out, recordId.toLong())
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(uniqueId))
         ExtUtil.writeBool(out, rememberMe)
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(syncToken))
@@ -113,7 +113,7 @@ class User : Persistable, Restorable, IMetaData {
     }
 
     fun setUserType(userType: String?) {
-        properties[KEY_USER_TYPE] = userType
+        properties[KEY_USER_TYPE] = userType ?: return
     }
 
     fun setRememberMe(rememberMe: Boolean) {
@@ -128,11 +128,11 @@ class User : Persistable, Restorable, IMetaData {
         return uniqueId
     }
 
-    fun setProperty(key: String?, `val`: String?) {
-        this.properties[key] = `val`
+    fun setProperty(key: String, `val`: String?) {
+        this.properties[key] = `val` ?: return
     }
 
-    fun getProperty(key: String?): String? {
+    fun getProperty(key: String): String? {
         return this.properties[key]
     }
 
@@ -140,7 +140,7 @@ class User : Persistable, Restorable, IMetaData {
         return this.properties
     }
 
-    override fun templateData(dm: FormInstance?, parentRef: TreeReference?) {
+    override fun templateData(dm: FormInstance, parentRef: TreeReference) {
         RestoreUtils.applyDataType(dm, "name", parentRef, String::class.java)
         RestoreUtils.applyDataType(dm, "pass", parentRef, String::class.java)
         RestoreUtils.applyDataType(dm, "type", parentRef, String::class.java)
@@ -149,7 +149,7 @@ class User : Persistable, Restorable, IMetaData {
         RestoreUtils.applyDataType(dm, "remember", parentRef, Boolean::class.java)
     }
 
-    override fun getMetaData(fieldName: String?): Any {
+    override fun getMetaData(fieldName: String): Any {
         if (META_UID == fieldName) {
             return uniqueId as Any
         } else if (META_USERNAME == fieldName) {

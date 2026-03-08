@@ -145,7 +145,7 @@ class GroupDef : IFormElement {
      * items that should be created.
      */
     fun getConextualizedCountReference(context: TreeReference): TreeReference {
-        return DataInstance.unpackReference(count).contextualize(context)
+        return DataInstance.unpackReference(count!!).contextualize(context)!!
     }
 
     override fun toString(): String {
@@ -156,7 +156,7 @@ class GroupDef : IFormElement {
         var total = 0
         val e = children.elements()
         while (e.hasMoreElements()) {
-            total += (e.nextElement() as IFormElement).deepChildCount
+            total += (e.nextElement() as IFormElement).getDeepChildCount()
         }
         return total
     }
@@ -194,7 +194,7 @@ class GroupDef : IFormElement {
      */
     @Throws(IOException::class)
     override fun writeExternal(dos: DataOutputStream) {
-        ExtUtil.writeNumeric(dos, getID())
+        ExtUtil.writeNumeric(dos, getID().toLong())
         ExtUtil.write(dos, ExtWrapNullable(getAppearanceAttr()))
         ExtUtil.write(dos, ExtWrapTagged(getBind()))
         ExtUtil.write(dos, ExtWrapNullable(getTextID()))

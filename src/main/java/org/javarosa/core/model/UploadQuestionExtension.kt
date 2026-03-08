@@ -28,12 +28,12 @@ class UploadQuestionExtension : QuestionDataExtension {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(dis: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(dis: DataInputStream, pf: PrototypeFactory) {
         this.maxDimen = ExtUtil.readInt(dis)
     }
 
     @Throws(IOException::class)
     override fun writeExternal(dos: DataOutputStream) {
-        ExtUtil.writeNumeric(dos, maxDimen)
+        ExtUtil.writeNumeric(dos, maxDimen.toLong())
     }
 }

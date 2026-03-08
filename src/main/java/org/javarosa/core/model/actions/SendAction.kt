@@ -35,7 +35,7 @@ class SendAction : Action {
     }
 
     override fun processAction(model: FormDef, contextRef: TreeReference?): TreeReference? {
-        val profile = model.getSubmissionProfile(submissionId)
+        val profile = model.getSubmissionProfile(submissionId!!) ?: return null
         val url = profile.resource
 
         val ref = profile.ref
@@ -46,7 +46,7 @@ class SendAction : Action {
 
         var result: String? = null
         try {
-            result = model.dispatchSendCallout(url, map)
+            result = model.dispatchSendCallout(url!!, map!!)
         } catch (e: Exception) {
             Logger.exception("send-action", e)
         }
@@ -54,19 +54,19 @@ class SendAction : Action {
             null
         } else {
             val target = profile.targetRef
-            model.setValue(UncastData(result), target)
+            model.setValue(UncastData(result), target!!)
             target
         }
     }
 
     private fun getKeyValueMapping(model: FormDef, ref: TreeReference): Multimap<String, String> {
         val map: Multimap<String, String> = ArrayListMultimap.create()
-        val element = model.evaluationContext.resolveReference(ref)
-        for (i in 0 until element.numChildren) {
+        val element = model.getEvaluationContext()!!.resolveReference(ref)
+        for (i in 0 until element!!.getNumChildren()) {
             val child = element.getChildAt(i)
 
-            val name = child.name
-            val value = child.value
+            val name = child!!.getName()
+            val value = child.getValue()
 
             if (value != null) {
                 map.put(name, value.uncast().getString())
@@ -82,7 +82,7 @@ class SendAction : Action {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeString(out, submissionId)
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(submissionId))
     }
 
     companion object {

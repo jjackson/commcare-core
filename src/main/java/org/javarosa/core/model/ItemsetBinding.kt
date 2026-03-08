@@ -1,7 +1,7 @@
 package org.javarosa.core.model
 
 import org.javarosa.core.model.condition.IConditionExpr
-import org.javarosa.core.model.instance.FormInstance
+import org.javarosa.core.model.instance.DataInstance
 import org.javarosa.core.model.instance.TreeReference
 import org.javarosa.core.model.util.restorable.RestoreUtils
 import org.javarosa.core.util.externalizable.DeserializationException
@@ -91,9 +91,9 @@ class ItemsetBinding : Externalizable {
     }
 
     fun setDestRef(q: QuestionDef) {
-        destRef = FormInstance.unpackReference(q.bind).clone()
+        destRef = DataInstance.unpackReference(q.getBind()!!).clone()
         if (copyMode) {
-            destRef!!.add(copyRef!!.nameLast, TreeReference.INDEX_UNBOUND)
+            destRef!!.add(copyRef!!.getNameLast(), TreeReference.INDEX_UNBOUND)
         }
     }
 
@@ -105,7 +105,7 @@ class ItemsetBinding : Externalizable {
         val relRef: TreeReference? = if (copyRef == null) {
             valueRef //must be absolute in this case
         } else if (valueRef != null) {
-            valueRef!!.relativize(copyRef)
+            valueRef!!.relativize(copyRef!!)
         } else {
             null
         }

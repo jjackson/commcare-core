@@ -45,11 +45,11 @@ object ItemSetUtils {
         @Nullable mainInstance: FormInstance?,
         profileEnabled: Boolean
     ) {
-        val formInstance: DataInstance?
-        if (itemset.nodesetRef!!.instanceName != null) {
-            formInstance = evaluationContext.getInstance(itemset.nodesetRef!!.instanceName)
+        val formInstance: DataInstance<*>?
+        if (itemset.nodesetRef!!.getInstanceName() != null) {
+            formInstance = evaluationContext.getInstance(itemset.nodesetRef!!.getInstanceName())
             if (formInstance == null) {
-                throw XPathException("Instance ${itemset.nodesetRef!!.instanceName} not found")
+                throw XPathException("Instance ${itemset.nodesetRef!!.getInstanceName()} not found")
             }
         } else {
             formInstance = mainInstance
@@ -80,7 +80,7 @@ object ItemSetUtils {
         }
 
         if (matches == null) {
-            val instanceName = itemset.nodesetRef!!.instanceName
+            val instanceName = itemset.nodesetRef!!.getInstanceName()
             if (instanceName == null) {
                 // itemset references a path rooted in the main instance
                 throw XPathException("No items found at '${itemset.nodesetRef}'")
@@ -184,7 +184,7 @@ object ItemSetUtils {
     private fun buildSelectChoice(
         choiceRef: TreeReference,
         itemset: ItemsetBinding,
-        formInstance: DataInstance,
+        formInstance: DataInstance<*>,
         @Nullable mainInstance: FormInstance?,
         ec: EvaluationContext,
         index: Int

@@ -26,24 +26,24 @@ interface IConditionExpr : Externalizable {
      * Evaluate this expression against the current models and
      * context and provide a true or false value.
      */
-    fun eval(model: DataInstance?, evalContext: EvaluationContext?): Boolean
+    fun eval(model: DataInstance<*>?, evalContext: EvaluationContext?): Boolean
 
     /**
      * Evaluate this expression against the current models and
      * context and provide the final value of the expression, without
      * forcing a cast to a boolean value.
      */
-    fun evalRaw(model: DataInstance?, evalContext: EvaluationContext?): Any?
+    fun evalRaw(model: DataInstance<*>?, evalContext: EvaluationContext?): Any?
 
     /**
      * Used for itemsets. Fill this documentation in.
      */
-    fun evalReadable(model: DataInstance?, evalContext: EvaluationContext?): String?
+    fun evalReadable(model: DataInstance<*>?, evalContext: EvaluationContext?): String?
 
     /**
      * Used for itemsets. Fill this documentation in.
      */
-    fun evalNodeset(model: DataInstance?, evalContext: EvaluationContext?): Vector<TreeReference>
+    fun evalNodeset(model: DataInstance<*>?, evalContext: EvaluationContext?): Vector<TreeReference>
 
     /**
      * Provides a list of all of the references that this expression's value depends upon
@@ -63,5 +63,5 @@ interface IConditionExpr : Externalizable {
      * to signal that the expression cannot be statically evaluated.
      */
     @Throws(UnpivotableExpressionException::class)
-    fun pivot(model: DataInstance?, evalContext: EvaluationContext?): Vector<Any>
+    fun pivot(model: DataInstance<*>?, evalContext: EvaluationContext?): Vector<Any>
 }

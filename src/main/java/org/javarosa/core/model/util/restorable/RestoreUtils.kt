@@ -3,6 +3,7 @@ package org.javarosa.core.model.util.restorable
 import org.javarosa.core.model.Constants
 import org.javarosa.core.model.condition.EvaluationContext
 import org.javarosa.core.model.condition.IConditionExpr
+import org.javarosa.core.model.instance.DataInstance
 import org.javarosa.core.model.instance.FormInstance
 import org.javarosa.core.model.instance.TreeReference
 import org.javarosa.core.services.storage.Persistable
@@ -18,7 +19,7 @@ object RestoreUtils {
 
     @JvmStatic
     fun ref(refStr: String): TreeReference {
-        return FormInstance.unpackReference(XPathReference(refStr))
+        return DataInstance.unpackReference(XPathReference(refStr))
     }
 
     @JvmStatic
@@ -27,11 +28,11 @@ object RestoreUtils {
     }
 
     private fun topRef(dm: FormInstance): TreeReference {
-        return ref("/" + dm.root.name)
+        return ref("/" + dm.getRoot().getName())
     }
 
     private fun childRef(childPath: String, parentRef: TreeReference): TreeReference {
-        return ref(childPath).parent(parentRef)
+        return ref(childPath).parent(parentRef)!!
     }
 
     //used for incoming data
@@ -55,8 +56,8 @@ object RestoreUtils {
             ?: throw RuntimeException("Could not find node [$xpath] when parsing saved instance!")
 
         return if (node.isRelevant) {
-            val value = node.value
-            value?.value
+            val value = node.getValue()
+            value?.getValue()
         } else {
             null
         }
@@ -67,10 +68,10 @@ object RestoreUtils {
         val dataType = getDataType(type)
         val ref = childRef(path, parent)
 
-        val v: Vector<TreeReference> = EvaluationContext(dm).expandReference(ref)
+        val v: Vector<TreeReference> = EvaluationContext(dm).expandReference(ref) ?: return
         for (i in 0 until v.size) {
-            val e = dm.resolveReference(v.elementAt(i))
-            e.dataType = dataType
+            val e = dm.resolveReference(v.elementAt(i)) ?: continue
+            e.setDataType(dataType)
         }
     }
 

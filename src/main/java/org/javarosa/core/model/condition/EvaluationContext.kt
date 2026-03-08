@@ -81,7 +81,7 @@ class EvaluationContext {
     // Responsible for informing itext what form is requested if relevant
     private var outputTextForm: String? = null
 
-    private val formInstances: Hashtable<String, DataInstance>
+    private val formInstances: Hashtable<String, DataInstance<*>>
 
     // original context reference used for evaluating current()
     private var original: TreeReference? = null
@@ -97,28 +97,28 @@ class EvaluationContext {
 
     private var expressionCacher: ExpressionCacher? = null
 
-    private val instance: DataInstance?
+    private val instance: DataInstance<*>?
 
-    constructor(instance: DataInstance?) : this(instance, Hashtable())
+    constructor(instance: DataInstance<*>?) : this(instance, Hashtable())
 
     constructor(base: EvaluationContext?, context: TreeReference?) :
             this(base, base?.instance, context, base?.formInstances ?: Hashtable())
 
     constructor(
         base: EvaluationContext?,
-        formInstances: Hashtable<String, DataInstance>,
+        formInstances: Hashtable<String, DataInstance<*>>,
         context: TreeReference?
     ) : this(base, base?.instance, context, formInstances)
 
     constructor(
         instance: FormInstance?,
-        formInstances: Hashtable<String, DataInstance>,
+        formInstances: Hashtable<String, DataInstance<*>>,
         base: EvaluationContext?
     ) : this(base, instance, base?.contextRef, formInstances)
 
     constructor(
-        instance: DataInstance?,
-        formInstances: Hashtable<String, DataInstance>
+        instance: DataInstance<*>?,
+        formInstances: Hashtable<String, DataInstance<*>>
     ) {
         this.formInstances = formInstances
         this.instance = instance
@@ -133,9 +133,9 @@ class EvaluationContext {
      */
     private constructor(
         base: EvaluationContext?,
-        instance: DataInstance?,
+        instance: DataInstance<*>?,
         contextNode: TreeReference?,
-        formInstances: Hashtable<String, DataInstance>
+        formInstances: Hashtable<String, DataInstance<*>>
     ) {
         // TODO: These should be deep, not shallow
         this.functionHandlers = base?.functionHandlers ?: Hashtable()
@@ -174,7 +174,7 @@ class EvaluationContext {
         setQueryContext(base?.queryContext ?: QueryContext())
     }
 
-    fun getInstance(id: String?): DataInstance? {
+    fun getInstance(id: String?): DataInstance<*>? {
         return if (formInstances.containsKey(id)) formInstances[id] else null
     }
 
@@ -231,7 +231,7 @@ class EvaluationContext {
      * but it does isolate some changes to the instances which happen when spawning new contexts
      * e.g. replacing the root.
      */
-    private fun copyInstances(formInstances: Hashtable<String, DataInstance>?) {
+    private fun copyInstances(formInstances: Hashtable<String, DataInstance<*>>?) {
         if (formInstances != null) {
             for ((key, value) in formInstances) {
                 var inst = value
@@ -323,7 +323,7 @@ class EvaluationContext {
         val baseInstance = retrieveInstance(ref)
         val v = Vector<TreeReference>()
 
-        expandReferenceAccumulator(ref, baseInstance, baseInstance.root.ref, v, includeTemplates)
+        expandReferenceAccumulator(ref, baseInstance, baseInstance.getRoot()!!.getRef(), v, includeTemplates)
         return v
     }
 
@@ -340,14 +340,14 @@ class EvaluationContext {
      *                       set.
      */
     private fun expandReferenceAccumulator(
-        sourceRef: TreeReference, sourceInstance: DataInstance,
+        sourceRef: TreeReference, sourceInstance: DataInstance<*>,
         workingRef: TreeReference?, refs: Vector<TreeReference>,
         includeTemplates: Boolean
     ) {
         if (workingRef == null) {
             throw RuntimeException(
                 "Encountered invalid instance definition while evaluating " + sourceRef.toString() +
-                        " for instance " + sourceInstance.instanceId + " with root: " + sourceInstance.root
+                        " for instance " + sourceInstance.getInstanceId() + " with root: " + sourceInstance.getRoot()
             )
         }
 
@@ -381,13 +381,13 @@ class EvaluationContext {
         // Use the reference's simple predicates to filter the potential
         // nodeset.  Predicates used in filtering are removed from the
         // predicate input argument.
-        var childSet: Collection<TreeReference>? = node.tryBatchChildFetch(name, mult, predicates, this)
+        var childSet: Collection<TreeReference>? = node?.tryBatchChildFetch(name, mult, predicates, this)
 
         this.reportBulkTraceResults(originalPredicates, predicates, childSet)
         this.closeTrace()
 
         if (childSet == null) {
-            childSet = loadReferencesChildren(node, name, mult, includeTemplates)
+            childSet = loadReferencesChildren(node!!, name, mult, includeTemplates)
         }
 
         val subContext = queryContext!!
@@ -479,15 +479,15 @@ class EvaluationContext {
                 for (i in 0 until count) {
                     val child = node.getChild(childName, i)
                     if (child != null) {
-                        childSet.addElement(child.ref)
+                        childSet.addElement(child.getRef())
                     } else {
-                        throw IllegalStateException("Missing or non-sequential nodes expanding a reference: " + node.ref)
+                        throw IllegalStateException("Missing or non-sequential nodes expanding a reference: " + node.getRef())
                     }
                 }
                 if (includeTemplates) {
                     val template = node.getChild(childName, TreeReference.INDEX_TEMPLATE)
                     if (template != null) {
-                        childSet.addElement(template.ref)
+                        childSet.addElement(template.getRef())
                     }
                 }
             } else if (childMult != TreeReference.INDEX_ATTRIBUTE) {
@@ -496,7 +496,7 @@ class EvaluationContext {
                 // appropriate child
                 val child = node.getChild(childName, childMult)
                 if (child != null) {
-                    childSet.addElement(child.ref)
+                    childSet.addElement(child.getRef())
                 }
             }
         }
@@ -506,7 +506,7 @@ class EvaluationContext {
         if (childMult == TreeReference.INDEX_ATTRIBUTE) {
             val attribute = node.getAttribute(null, childName)
             if (attribute != null) {
-                childSet.addElement(attribute.ref)
+                childSet.addElement(attribute.getRef())
             }
         }
         return childSet
@@ -571,7 +571,7 @@ class EvaluationContext {
         return ArrayList(formInstances.keys)
     }
 
-    fun getMainInstance(): DataInstance? {
+    fun getMainInstance(): DataInstance<*>? {
         return instance
     }
 
@@ -579,11 +579,11 @@ class EvaluationContext {
         if (Thread.interrupted()) {
             throw RequestAbandonedException()
         }
-        var resolveInstance: DataInstance? = this.getMainInstance()
-        if (qualifiedRef.instanceName != null &&
-            (resolveInstance == null || resolveInstance.instanceId == null ||
-                    resolveInstance.instanceId != qualifiedRef.instanceName)) {
-            resolveInstance = this.getInstance(qualifiedRef.instanceName)
+        var resolveInstance: DataInstance<*>? = this.getMainInstance()
+        if (qualifiedRef.getInstanceName() != null &&
+            (resolveInstance == null || resolveInstance.getInstanceId() == null ||
+                    resolveInstance.getInstanceId() != qualifiedRef.getInstanceName())) {
+            resolveInstance = this.getInstance(qualifiedRef.getInstanceName())
         }
         if (resolveInstance == null) {
             val e = XPathMissingInstanceException(qualifiedRef)
@@ -607,7 +607,7 @@ class EvaluationContext {
      */
     fun getCacheHost(ref: TreeReference): CacheHost? {
         val cacheInstance = retrieveInstance(ref) ?: return null
-        return cacheInstance.cacheHost
+        return cacheInstance.getCacheHost()
     }
 
     /**
@@ -620,10 +620,10 @@ class EvaluationContext {
      * @return the instance that the reference argument names, if loaded,
      * otherwise the main instance if present.
      */
-    private fun retrieveInstance(ref: TreeReference): DataInstance {
-        if (ref.instanceName != null &&
-            formInstances.containsKey(ref.instanceName)) {
-            return formInstances[ref.instanceName]!!
+    private fun retrieveInstance(ref: TreeReference): DataInstance<*> {
+        if (ref.getInstanceName() != null &&
+            formInstances.containsKey(ref.getInstanceName())) {
+            return formInstances[ref.getInstanceName()]!!
         } else if (instance != null) {
             return instance
         }
@@ -692,14 +692,14 @@ class EvaluationContext {
             }
             val trace = dc.currentTraceLevel as BulkEvaluationTrace
             trace.setEvaluatedPredicates(startingSet, finalSet, childSet)
-            if (!trace.isBulkEvaluationSucceeded) {
-                val parentTrace = trace.parent
+            if (!trace.isBulkEvaluationSucceeded()) {
+                val parentTrace = trace.getParent()
                 if (parentTrace == null) {
                     trace.markClosed()
                     // no need to remove from the parent context if it doesn't exist
                     return
                 }
-                val traces = trace.parent.subTraces
+                val traces = trace.getParent()!!.getSubTraces()
                 synchronized(traces) {
                     traces.remove(trace)
                 }
@@ -743,15 +743,15 @@ class EvaluationContext {
             val currentTrace = dc.currentTraceLevel
             if (currentTrace != null) {
                 if (dc.traceReporter != null &&
-                    (currentTrace.parent == null || dc.traceReporter!!.reportAsFlat())) {
+                    (currentTrace.getParent() == null || dc.traceReporter!!.reportAsFlat())) {
                     dc.traceReporter!!.reportTrace(currentTrace)
                 }
 
-                if (currentTrace.parent == null) {
+                if (currentTrace.getParent() == null) {
                     dc.traceRoot = currentTrace
                 }
 
-                dc.currentTraceLevel = currentTrace.parent
+                dc.currentTraceLevel = currentTrace.getParent()
             }
         }
     }
@@ -802,7 +802,7 @@ class EvaluationContext {
     private fun updateInstances(instances: Map<String, ExternalDataInstance>) {
         val byRef = getInstancesByRef()
         instances.forEach { (name, newInstance) ->
-            val ref = newInstance.reference
+            val ref = newInstance.getReference()
             if (!byRef.containsKey(ref)) {
                 if (formInstances.containsKey(name)) {
                     throw RuntimeException(
@@ -815,19 +815,19 @@ class EvaluationContext {
                 formInstances[name] = newInstance
             } else {
                 for (existing in byRef[ref]) {
-                    if (existing.root == null) {
+                    if (existing.getRoot() == null) {
                         // just in time initializing of the instance
-                        val instanceId = existing.instanceId
-                        var root = newInstance.root as TreeElement
+                        val instanceId = existing.getInstanceId()
+                        var root = newInstance.getRoot() as TreeElement
                         if (instanceId != name) {
                             root = TreeUtilities.renameInstance(root, instanceId)
                         }
-                        root.setParent(existing.base)
+                        root.setParent(existing.getBase())
                         existing.copyFromSource(ConcreteInstanceRoot(root))
                     }
                 }
             }
-            if (!formInstances.containsKey(name) || formInstances[name]!!.root == null) {
+            if (!formInstances.containsKey(name) || formInstances[name]!!.getRoot() == null) {
                 // instance name is the same so no need to rename it
                 formInstances[name] = newInstance
             }
@@ -838,7 +838,7 @@ class EvaluationContext {
         val builder = ImmutableListMultimap.builder<String, ExternalDataInstance>()
         formInstances.values.forEach { inst ->
             if (inst is ExternalDataInstance) {
-                builder.put(inst.reference, inst)
+                builder.put(inst.getReference(), inst)
             }
         }
         return builder.build()
