@@ -19,7 +19,7 @@ import java.util.Hashtable
 /**
  * This class represents the xform model instance
  */
-class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
+open class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
 
     /**
      * The date that this model was taken and recorded
