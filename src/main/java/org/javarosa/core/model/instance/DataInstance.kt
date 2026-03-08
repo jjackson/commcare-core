@@ -24,7 +24,7 @@ import java.util.Vector
  *
  * @author ctsims
  */
-abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
+abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
 
     /**
      * The integer Id of the model
@@ -184,7 +184,7 @@ abstract class DataInstance<T : AbstractTreeElement<T>> : Persistable {
      * @param ref the reference path to be followed
      * @return was a valid path found for the reference?
      */
-    fun hasTemplatePath(ref: TreeReference): Boolean {
+    open fun hasTemplatePath(ref: TreeReference): Boolean {
         return ref.isAbsolute && hasTemplatePathRec(ref, getBase(), 0)
     }
 

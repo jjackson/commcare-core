@@ -39,7 +39,7 @@ import java.util.Vector
  *
  * @author Clayton Sims
  */
-class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
+open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
 
     @JvmField
     protected var name: String? = null // can be null only for hidden root node

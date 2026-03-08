@@ -23,7 +23,7 @@ import java.util.Vector
  *
  * @author Clayton Sims
  */
-open class ConcreteTreeElement<T : AbstractTreeElement<T>> : AbstractTreeElement<T> {
+open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement<T> {
 
     @JvmField
     protected var name: String? = null // can be null only for hidden root node

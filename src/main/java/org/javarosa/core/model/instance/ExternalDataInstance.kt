@@ -54,7 +54,7 @@ open class ExternalDataInstance : DataInstance<TreeElement> {
         base!!.setChild(root)
     }
 
-    fun useCaseTemplate(): Boolean {
+    open fun useCaseTemplate(): Boolean {
         return if (source == null) {
             CaseInstanceTreeElement.MODEL_NAME == instanceid
         } else {
