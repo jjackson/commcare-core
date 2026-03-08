@@ -152,7 +152,9 @@ jar {
     archiveBaseName = "commcare-libraries"
 }
 
-jar.dependsOn test
+// Run tests as part of the 'build' lifecycle, but don't make jar depend on test
+// directly (causes circular dependency with Kotlin plugin's compileTestKotlin → jar)
+build.dependsOn test
 
 task cliJar(type: Jar, dependsOn: cliClasses) {
     archiveBaseName = "commcare-cli"
