@@ -28,6 +28,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build with Gradle (retry on dependency timeout)
         run: |
           # Retry up to 3 times to handle JitPack flakiness
