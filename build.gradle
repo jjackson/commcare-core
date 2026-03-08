@@ -9,12 +9,17 @@ buildscript {
 
 plugins {
     id 'java-library'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     id "me.champeau.jmh" version "0.7.0"
 }
 
 // Needed even though it looks unused
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
+
+kotlin {
+    jvmToolchain(17)
+}
 
 configurations {
     ccapi.extendsFrom(ccapiImplementation)
@@ -68,6 +73,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     api 'com.github.stefanhaustein:kxml2:2.4.1'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.0.1'
     // Added so Android Studio recognizes libs in util jar projects
