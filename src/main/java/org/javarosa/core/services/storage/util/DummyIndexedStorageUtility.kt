@@ -349,14 +349,16 @@ class DummyIndexedStorageUtility<T : Persistable> : IStorageUtilityIndexed<T> {
         }
     }
 
-    override fun getBulkRecordsForIndex(metaFieldName: String, matchingValues: Collection<String>): Vector<T> {
+    override fun getBulkRecordsForIndex(metaFieldName: String, matchingValues: MutableCollection<String>): Vector<T> {
         // we don't care about bulk retrieval for dummy storage, so just call normal method to get records here
-        return getRecordsForValues(arrayOf(metaFieldName), matchingValues.toTypedArray())
+        @Suppress("UNCHECKED_CAST")
+        return getRecordsForValues(arrayOf(metaFieldName), matchingValues.toTypedArray() as Array<Any>)
     }
 
-    override fun getBulkIdsForIndex(metaFieldName: String, matchingValues: Collection<String>): Vector<Int> {
+    override fun getBulkIdsForIndex(metaFieldName: String, matchingValues: MutableCollection<String>): Vector<Int> {
         // we don't care about bulk retrieval for dummy storage, so just call normal method to get records here
-        val result = getIDsForValues(arrayOf(metaFieldName), matchingValues.toTypedArray())
+        @Suppress("UNCHECKED_CAST")
+        val result = getIDsForValues(arrayOf(metaFieldName), matchingValues.toTypedArray() as Array<Any>)
         return Vector(result)
     }
 

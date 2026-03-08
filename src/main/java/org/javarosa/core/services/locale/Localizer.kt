@@ -211,7 +211,7 @@ class Localizer @JvmOverloads constructor(
                             ". There were " + keysmissing + " keys which were contained in this locale, but were not " +
                             "properly registered in the default Locale. Any keys which are added to a locale should always " +
                             "be added to the default locale to ensure appropriate functioning.\n" +
-                            "The missing translations were for the keys: " + missingKeys, missingKeys, defaultLocale
+                            "The missing translations were for the keys: " + missingKeys, missingKeys, defaultLocale!!
                 )
             }
         }
@@ -276,13 +276,14 @@ class Localizer @JvmOverloads constructor(
      * @throws NoLocalizedTextException    If there is no text for the specified id
      */
     fun getText(textID: String, args: Array<String>): String {
-        var text = getText(textID, locale!!)
+        val currentLocale = locale!!
+        var text = getText(textID, currentLocale)
         if (text != null) {
             text = processArguments(text, args)
         } else {
             throw NoLocalizedTextException(
-                "The Localizer could not find a definition for ID: $textID in the '$locale' locale.",
-                textID, locale
+                "The Localizer could not find a definition for ID: $textID in the '$currentLocale' locale.",
+                textID, currentLocale
             )
         }
         return text
@@ -299,13 +300,14 @@ class Localizer @JvmOverloads constructor(
      * @throws NoLocalizedTextException    If there is no text for the specified id
      */
     fun getText(textID: String, args: Hashtable<*, *>): String {
-        var text = getText(textID, locale!!)
+        val currentLocale = locale!!
+        var text = getText(textID, currentLocale)
         if (text != null) {
             text = processArguments(text, args)
         } else {
             throw NoLocalizedTextException(
-                "The Localizer could not find a definition for ID: $textID in the '$locale' locale.",
-                textID, locale
+                "The Localizer could not find a definition for ID: $textID in the '$currentLocale' locale.",
+                textID, currentLocale
             )
         }
         return text

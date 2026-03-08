@@ -94,9 +94,9 @@ open class TableBuilder {
         rawCols.add(DatabaseHelper.ID_COL)
 
         if (p is IMetaData) {
-            val keys = p.metaDataFields
+            val keys = (p as IMetaData).getMetaDataFields()
             if (keys != null) {
-                for (key in keys) {
+                for (key: String in keys) {
                     val columnName = scrubName(key)
                     if (!rawCols.contains(columnName)) {
                         rawCols.add(columnName)

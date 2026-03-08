@@ -83,7 +83,7 @@ class Selection : Externalizable {
         this.index = index
     }
 
-    override fun clone(): Selection {
+    fun clone(): Selection {
         val s = Selection()
         s.choice = choice
         s.xmlValue = xmlValue
@@ -134,7 +134,7 @@ class Selection : Externalizable {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         xmlValue = ExtUtil.readString(`in`)
         index = ExtUtil.readInt(`in`)
     }
@@ -142,7 +142,7 @@ class Selection : Externalizable {
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
         ExtUtil.writeString(out, getValue())
-        ExtUtil.writeNumeric(out, index)
+        ExtUtil.writeNumeric(out, index.toLong())
     }
 
     /**

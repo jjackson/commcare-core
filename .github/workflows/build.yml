@@ -11,6 +11,10 @@ on:
       - 'master'
       - 'formplayer'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,19 +35,5 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (retry on dependency timeout)
-        run: |
-          # Retry up to 3 times to handle JitPack flakiness
-          for attempt in 1 2 3; do
-            echo "=== Build attempt $attempt ==="
-            if ./gradlew build --no-daemon; then
-              echo "Build succeeded on attempt $attempt"
-              exit 0
-            fi
-            if [ $attempt -lt 3 ]; then
-              echo "Build failed, retrying in 30s..."
-              sleep 30
-            fi
-          done
-          echo "Build failed after 3 attempts"
-          exit 1
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon

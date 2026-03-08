@@ -40,7 +40,7 @@ class BooleanData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         data = `in`.readBoolean()
     }
 

@@ -67,7 +67,7 @@ open class SessionWrapper : CommCareSession, SessionWrapperInterface {
 
     override fun getEvaluationContextWithAccumulatedInstances(commandID: String, xPathAnalyzable: XPathAnalyzable): EvaluationContext {
         val instancesNeededForTextCalculation =
-            InstanceNameAccumulatingAnalyzer().accumulate(xPathAnalyzable)
+            InstanceNameAccumulatingAnalyzer().accumulate(xPathAnalyzable) ?: emptySet()
         return getRestrictedEvaluationContext(commandID, instancesNeededForTextCalculation)
     }
 
@@ -113,7 +113,7 @@ open class SessionWrapper : CommCareSession, SessionWrapperInterface {
         return super.getNeededData(getEvaluationContext())
     }
 
-    override fun stepBack() {
+    fun stepBack() {
         super.stepBack(getEvaluationContext())
     }
 

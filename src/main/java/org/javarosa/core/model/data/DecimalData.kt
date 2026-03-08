@@ -50,7 +50,7 @@ class DecimalData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         d = ExtUtil.readDecimal(`in`)
     }
 

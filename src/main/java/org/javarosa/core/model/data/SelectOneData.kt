@@ -64,13 +64,13 @@ class SelectOneData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         s = ExtUtil.read(`in`, Selection::class.java, pf) as Selection
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, s)
+        ExtUtil.write(out, s!!)
     }
 
     override fun uncast(): UncastData {

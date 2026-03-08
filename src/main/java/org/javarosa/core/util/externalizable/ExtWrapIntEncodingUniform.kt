@@ -17,7 +17,7 @@ class ExtWrapIntEncodingUniform : ExtWrapIntEncoding {
     constructor()
 
     override fun clone(`val`: Any?): ExternalizableWrapper {
-        return ExtWrapIntEncodingUniform(ExtUtil.toLong(`val`))
+        return ExtWrapIntEncodingUniform(ExtUtil.toLong(`val`!!))
     }
 
     @Throws(IOException::class)

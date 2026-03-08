@@ -74,13 +74,13 @@ class SelectMultiData : IAnswerData {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         vs = ExtUtil.read(`in`, ExtWrapList(Selection::class.java), pf) as Vector<Selection>
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, ExtWrapList(vs))
+        ExtUtil.write(out, ExtWrapList(vs!!))
     }
 
     override fun uncast(): UncastData {
@@ -100,7 +100,7 @@ class SelectMultiData : IAnswerData {
 
     override fun cast(data: UncastData): SelectMultiData {
         val v = Vector<Selection>()
-        val choices = DataUtil.splitOnSpaces(data.value)
+        val choices = DataUtil.splitOnSpaces(data.value!!)
         for (s in choices) {
             v.addElement(Selection(s))
         }

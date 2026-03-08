@@ -40,9 +40,9 @@ class ExtWrapListPoly : ExternalizableWrapper {
     override fun writeExternal(out: DataOutputStream) {
         @Suppress("UNCHECKED_CAST")
         val v = `val` as Vector<Any?>
-        ExtUtil.writeNumeric(out, v.size)
+        ExtUtil.writeNumeric(out, v.size.toLong())
         for (i in v.indices) {
-            ExtUtil.write(out, ExtWrapTagged(v.elementAt(i)))
+            ExtUtil.write(out, ExtWrapTagged(v.elementAt(i)!!))
         }
     }
 

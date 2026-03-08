@@ -31,12 +31,12 @@ class ExtWrapBase : ExternalizableWrapper {
 
     @Throws(IOException::class, DeserializationException::class)
     override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
-        `val` = ExtUtil.read(`in`, type, pf)
+        `val` = ExtUtil.read(`in`, type!!, pf)
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, `val`)
+        ExtUtil.write(out, `val`!!)
     }
 
     override fun metaReadExternal(`in`: DataInputStream, pf: PrototypeFactory) {

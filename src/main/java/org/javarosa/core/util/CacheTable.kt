@@ -42,7 +42,7 @@ open class CacheTable<T, K> {
         }
     }
 
-    fun register(key: T, item: K) {
+    open fun register(key: T, item: K) {
         synchronized(this) {
             currentTable[key] = WeakReference(item)
             totalAdditions++

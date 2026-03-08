@@ -30,8 +30,9 @@ class ExtWrapTagged : ExternalizableWrapper {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        writeTag(out, `val`!!)
-        ExtUtil.write(out, `val`)
+        val localVal = `val`!!
+        writeTag(out, localVal)
+        ExtUtil.write(out, localVal)
     }
 
     override fun metaReadExternal(`in`: DataInputStream, pf: PrototypeFactory) {
@@ -102,7 +103,7 @@ class ExtWrapTagged : ExternalizableWrapper {
             var obj = o
             if (obj is ExternalizableWrapper && obj !is ExtWrapBase) {
                 out.write(PrototypeFactory.getWrapperTag(), 0, PrototypeFactory.getClassHashSize())
-                ExtUtil.writeNumeric(out, WRAPPER_CODES[obj.javaClass]!!)
+                ExtUtil.writeNumeric(out, WRAPPER_CODES[obj.javaClass]!!.toLong())
                 obj.metaWriteExternal(out)
             } else {
                 var type: Class<*>? = null

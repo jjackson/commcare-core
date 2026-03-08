@@ -65,13 +65,13 @@ class PointerAnswerData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         data = ExtUtil.read(`in`, ExtWrapTagged(), pf) as IDataPointer
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, ExtWrapTagged(data))
+        ExtUtil.write(out, ExtWrapTagged(data!!))
     }
 
     override fun uncast(): UncastData {

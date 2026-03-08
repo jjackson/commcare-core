@@ -60,8 +60,8 @@ class ExtWrapMap : ExternalizableWrapper {
         }
 
         for (i in 0 until size) {
-            val key = ExtUtil.read(`in`, keyType, pf)
-            val elem = ExtUtil.read(`in`, dataType, pf)
+            val key = ExtUtil.read(`in`, keyType!!, pf)
+            val elem = ExtUtil.read(`in`, dataType!!, pf)
             h[key] = elem
         }
         `val` = h
@@ -72,7 +72,7 @@ class ExtWrapMap : ExternalizableWrapper {
         @Suppress("UNCHECKED_CAST")
         val h = `val` as Hashtable<Any, Any>
 
-        ExtUtil.writeNumeric(out, h.size)
+        ExtUtil.writeNumeric(out, h.size.toLong())
         val e = h.keys()
         while (e.hasMoreElements()) {
             val key = e.nextElement()
@@ -106,7 +106,7 @@ class ExtWrapMap : ExternalizableWrapper {
             dataType!!
         }
 
-        ExtUtil.writeNumeric(out, type)
+        ExtUtil.writeNumeric(out, type.toLong())
         ExtWrapTagged.writeTag(out, keyTagObj)
         ExtWrapTagged.writeTag(out, elemTagObj)
     }

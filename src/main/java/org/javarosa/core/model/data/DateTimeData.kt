@@ -49,13 +49,13 @@ class DateTimeData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         setValue(ExtUtil.readDate(`in`))
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeDate(out, d)
+        ExtUtil.writeDate(out, d!!)
     }
 
     override fun uncast(): UncastData {

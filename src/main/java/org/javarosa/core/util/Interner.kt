@@ -36,13 +36,13 @@ class Interner<K> : CacheTable<Int, K>() {
         }
     }
 
-    fun retrieve(key: Int): K? {
+    override fun retrieve(key: Int): K? {
         synchronized(this) {
             return super.retrieve(DataUtil.integer(key))
         }
     }
 
-    fun register(key: Int, item: K) {
+    override fun register(key: Int, item: K) {
         synchronized(this) {
             super.register(DataUtil.integer(key), item)
         }

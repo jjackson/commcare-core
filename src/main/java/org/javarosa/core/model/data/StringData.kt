@@ -63,13 +63,13 @@ class StringData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         s = ExtUtil.readString(`in`)
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeString(out, s)
+        ExtUtil.writeString(out, s!!)
     }
 
     override fun uncast(): UncastData {

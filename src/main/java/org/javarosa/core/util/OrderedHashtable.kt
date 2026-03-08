@@ -36,8 +36,8 @@ class OrderedHashtable<K, V> : Hashtable<K, V> {
         return orderedKeys.indexOf(key)
     }
 
-    fun keyAt(index: Int): Any {
-        return orderedKeys.elementAt(index) as Any
+    fun keyAt(index: Int): K {
+        return orderedKeys.elementAt(index)
     }
 
     override fun keys(): Enumeration<K> {
@@ -61,7 +61,7 @@ class OrderedHashtable<K, V> : Hashtable<K, V> {
         return v
     }
 
-    override fun remove(key: Any?): V? {
+    override fun remove(key: K): V? {
         orderedKeys.removeElement(key)
         return super.remove(key)
     }

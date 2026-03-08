@@ -40,7 +40,7 @@ class ExtWrapNullable : ExternalizableWrapper {
     @Throws(IOException::class, DeserializationException::class)
     override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         if (`in`.readBoolean()) {
-            `val` = ExtUtil.read(`in`, type, pf)
+            `val` = ExtUtil.read(`in`, type!!, pf)
         } else {
             `val` = null
         }
@@ -48,9 +48,10 @@ class ExtWrapNullable : ExternalizableWrapper {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        if (`val` != null) {
+        val localVal = `val`
+        if (localVal != null) {
             out.writeBoolean(true)
-            ExtUtil.write(out, `val`)
+            ExtUtil.write(out, localVal)
         } else {
             out.writeBoolean(false)
         }

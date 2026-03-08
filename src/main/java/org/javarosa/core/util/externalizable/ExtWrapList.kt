@@ -68,7 +68,7 @@ class ExtWrapList : ExternalizableWrapper {
                     listImplementation!!.newInstance() as MutableList<Any?>
                 }
                 for (i in 0 until size) {
-                    l.add(ExtUtil.read(`in`, type, pf))
+                    l.add(ExtUtil.read(`in`, type!!, pf))
                 }
                 `val` = l
             } catch (e: InstantiationException) {
@@ -80,7 +80,7 @@ class ExtWrapList : ExternalizableWrapper {
             val size = ExtUtil.readNumeric(`in`).toInt()
             val theval = arrayOfNulls<Any>(size)
             for (i in 0 until size) {
-                theval[i] = ExtUtil.read(`in`, type, pf)
+                theval[i] = ExtUtil.read(`in`, type!!, pf)
             }
             `val` = theval
         }
@@ -90,9 +90,9 @@ class ExtWrapList : ExternalizableWrapper {
     override fun writeExternal(out: DataOutputStream) {
         @Suppress("UNCHECKED_CAST")
         val l = `val` as List<Any?>
-        ExtUtil.writeNumeric(out, l.size)
+        ExtUtil.writeNumeric(out, l.size.toLong())
         for (i in l.indices) {
-            ExtUtil.write(out, if (type == null) l[i] else type!!.clone(l[i]))
+            ExtUtil.write(out, if (type == null) l[i]!! else type!!.clone(l[i]))
         }
     }
 

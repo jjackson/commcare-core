@@ -31,7 +31,7 @@ class ExtWrapIntEncodingSmall : ExtWrapIntEncoding {
     }
 
     override fun clone(`val`: Any?): ExternalizableWrapper {
-        return ExtWrapIntEncodingSmall(ExtUtil.toLong(`val`), bias)
+        return ExtWrapIntEncodingSmall(ExtUtil.toLong(`val`!!), bias)
     }
 
     @Throws(IOException::class)

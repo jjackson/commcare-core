@@ -41,7 +41,7 @@ class ExtWrapMultiMap : ExternalizableWrapper {
         val size = ExtUtil.readNumeric(`in`)
         val multimap = ArrayListMultimap.create<Any, Any>()
         for (i in 0 until size) {
-            val key = ExtUtil.read(`in`, keyType, pf)
+            val key = ExtUtil.read(`in`, keyType!!, pf)
             val numberOfValues = ExtUtil.readNumeric(`in`)
             for (l in 0 until numberOfValues) {
                 multimap.put(key, ExtUtil.read(`in`, ExtWrapTagged(), pf))
@@ -54,11 +54,11 @@ class ExtWrapMultiMap : ExternalizableWrapper {
     override fun writeExternal(out: DataOutputStream) {
         @Suppress("UNCHECKED_CAST")
         val multimap = `val` as Multimap<Any, Any>
-        ExtUtil.writeNumeric(out, multimap.keySet().size)
+        ExtUtil.writeNumeric(out, multimap.keySet().size.toLong())
         for (key in multimap.keySet()) {
             ExtUtil.write(out, if (keyType == null) key else keyType!!.clone(key))
             val values = multimap[key]
-            ExtUtil.writeNumeric(out, values.size)
+            ExtUtil.writeNumeric(out, values.size.toLong())
             val valueIterator = values.iterator()
             while (valueIterator.hasNext()) {
                 ExtUtil.write(out, ExtWrapTagged(valueIterator.next()))

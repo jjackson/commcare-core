@@ -80,7 +80,7 @@ class GeoPointData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         len = ExtUtil.readNumeric(`in`).toInt()
         for (i in 0 until len) {
             gp[i] = ExtUtil.readDecimal(`in`)
@@ -89,7 +89,7 @@ class GeoPointData : IAnswerData {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeNumeric(out, len)
+        ExtUtil.writeNumeric(out, len.toLong())
         for (i in 0 until len) {
             ExtUtil.writeDecimal(out, gp[i])
         }
@@ -102,7 +102,7 @@ class GeoPointData : IAnswerData {
     override fun cast(data: UncastData): GeoPointData {
         val ret = DoubleArray(4)
 
-        val choices = DataUtil.splitOnSpaces(data.value)
+        val choices = DataUtil.splitOnSpaces(data.value!!)
         if (choices.size < 2) {
             throw IllegalArgumentException("Fewer than two coordinates provided")
         }

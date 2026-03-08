@@ -51,13 +51,13 @@ class IntegerData : IAnswerData {
     }
 
     @Throws(IOException::class, DeserializationException::class)
-    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory?) {
+    override fun readExternal(`in`: DataInputStream, pf: PrototypeFactory) {
         n = ExtUtil.readInt(`in`)
     }
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.writeNumeric(out, n)
+        ExtUtil.writeNumeric(out, n.toLong())
     }
 
     override fun uncast(): UncastData {

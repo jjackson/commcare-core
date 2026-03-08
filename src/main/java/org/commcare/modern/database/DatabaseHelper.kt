@@ -66,7 +66,7 @@ object DatabaseHelper {
 
         var fields: HashSet<String>? = null
         if (p is IMetaData) {
-            val thefields = p.metaDataFields
+            val thefields = (p as IMetaData).getMetaDataFields()
             fields = HashSet()
             for (s in thefields) {
                 fields.add(TableBuilder.scrubName(s))
@@ -74,7 +74,7 @@ object DatabaseHelper {
         }
 
         if (em is IMetaData) {
-            val thefields = em.metaDataFields
+            val thefields = (em as IMetaData).getMetaDataFields()
             fields = HashSet()
             for (s in thefields) {
                 fields.add(TableBuilder.scrubName(s))
@@ -149,7 +149,7 @@ object DatabaseHelper {
         val values = HashMap<String, Any>()
 
         if (e is IMetaData) {
-            for (key in e.metaDataFields) {
+            for (key in (e as IMetaData).getMetaDataFields()) {
                 val o = e.getMetaData(key) ?: continue
                 val scrubbedKey = TableBuilder.scrubName(key)
                 if (o is Date) {
