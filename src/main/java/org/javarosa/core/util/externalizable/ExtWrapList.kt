@@ -109,9 +109,9 @@ class ExtWrapList : ExternalizableWrapper {
 
     @Throws(IOException::class)
     override fun metaWriteExternal(out: DataOutputStream) {
-        @Suppress("UNCHECKED_CAST")
-        val l = `val` as List<Any?>
         val tagObj: Any? = if (type == null) {
+            @Suppress("UNCHECKED_CAST")
+            val l = `val` as List<Any?>
             if (l.isEmpty()) {
                 Any()
             } else {
