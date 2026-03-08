@@ -25,7 +25,7 @@ import java.util.Vector;
  *
  * @author Phillip Mates (pmates@dimagi.com)
  */
-public abstract class StorageInstanceTreeElement<Model extends Externalizable, T extends AbstractTreeElement>
+public abstract class StorageInstanceTreeElement<Model extends Externalizable, T extends AbstractTreeElement<T>>
         extends StorageBackedTreeRoot<T> {
 
     private String modelName;
