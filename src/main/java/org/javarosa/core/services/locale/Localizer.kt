@@ -82,8 +82,8 @@ class Localizer @JvmOverloads constructor(
      * @param currentLocale Locale. Must be defined and not null.
      * @throws UnregisteredLocaleException If locale is null or not defined.
      */
-    fun setLocale(currentLocale: String) {
-        if (!hasLocale(currentLocale)) {
+    fun setLocale(currentLocale: String?) {
+        if (currentLocale == null || !hasLocale(currentLocale)) {
             throw UnregisteredLocaleException("Attempted to set to a locale that is not defined. Attempted Locale: $currentLocale")
         }
 
@@ -240,7 +240,7 @@ class Localizer @JvmOverloads constructor(
      * @return True if a mapping exists for the text handle in the given locale.
      * @throws UnregisteredLocaleException If locale is not defined.
      */
-    fun hasMapping(locale: String?, textID: String): Boolean {
+    fun hasMapping(locale: String?, textID: String?): Boolean {
         if (locale == null || !locales.contains(locale)) {
             throw UnregisteredLocaleException("Attempted to access an undefined locale ($locale) while checking for a mapping for  $textID")
         }

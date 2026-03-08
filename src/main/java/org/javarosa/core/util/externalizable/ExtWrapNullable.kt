@@ -18,12 +18,17 @@ class ExtWrapNullable : ExternalizableWrapper {
     constructor() {
     }
 
-    constructor(type: Class<*>) {
-        this.type = ExtWrapBase(type)
+    constructor(type: Class<*>?) {
+        if (type != null) {
+            this.type = ExtWrapBase(type)
+        }
     }
 
     /* serialization or deserialization, depending on context */
-    constructor(type: ExternalizableWrapper) {
+    constructor(type: ExternalizableWrapper?) {
+        if (type == null) {
+            return
+        }
         if (type is ExtWrapNullable) {
             throw IllegalArgumentException("Wrapping nullable with nullable is redundant")
         } else if (type.isEmpty) {

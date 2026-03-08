@@ -21,7 +21,7 @@ import java.util.Vector
  *
  * Created by ctsims on 1/25/2017.
  */
-class CaseIndexPrefetchHandler(private val mCaseIndexTable: CaseIndexTable) : QueryHandler<IndexedValueLookup> {
+class CaseIndexPrefetchHandler(private val mCaseIndexTable: CaseIndexTable?) : QueryHandler<IndexedValueLookup> {
 
     /**
      * This should be roughly the point at which 1 query of N items in the db will be faster
@@ -65,7 +65,7 @@ class CaseIndexPrefetchHandler(private val mCaseIndexTable: CaseIndexTable) : Qu
             }
 
             val trace = EvaluationTrace("Index Bulk Prefetch [$indexName]")
-            val indexFetchSize = mCaseIndexTable.loadIntoIndexTable(cache.indexCache, indexName)
+            val indexFetchSize = mCaseIndexTable?.loadIntoIndexTable(cache.indexCache, indexName) ?: 0
             trace.setOutcome("Loaded: $indexFetchSize")
             context.reportTrace(trace)
             cache.currentlyFetchedIndexKeys.add(indexName)
