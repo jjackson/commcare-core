@@ -255,7 +255,8 @@ public class CommCarePlatform {
 
     public IStorageUtilityIndexed<FormInstance> getFixtureStorage() {
         storageManager.registerStorage("fixture", FormInstance.class);
-        return storageManager.getStorage("fixture");
+        //noinspection unchecked
+        return (IStorageUtilityIndexed<FormInstance>)storageManager.getStorage("fixture");
     }
 
     public PropertyManager getPropertyManager() {

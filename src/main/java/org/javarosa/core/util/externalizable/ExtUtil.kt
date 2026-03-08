@@ -291,7 +291,8 @@ class ExtUtil {
         }
 
         @JvmStatic
-        fun nullIfEmpty(v: Vector<*>?): Vector<*>? {
+        @Suppress("UNCHECKED_CAST")
+        fun <T> nullIfEmpty(v: Vector<T>?): Vector<T>? {
             return if (v == null) null else if (v.size == 0) null else v
         }
 
