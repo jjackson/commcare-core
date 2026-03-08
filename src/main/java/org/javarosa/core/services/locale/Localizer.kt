@@ -262,7 +262,8 @@ class Localizer @JvmOverloads constructor(
      * @throws NullPointerException        if textID is null
      */
     fun getText(textID: String): String? {
-        return getText(textID, locale!!)
+        val currentLocale = locale ?: throw UnregisteredLocaleException("Current locale not set")
+        return getText(textID, currentLocale)
     }
 
     /**
@@ -276,7 +277,7 @@ class Localizer @JvmOverloads constructor(
      * @throws NoLocalizedTextException    If there is no text for the specified id
      */
     fun getText(textID: String, args: Array<String>): String {
-        val currentLocale = locale!!
+        val currentLocale = locale ?: throw UnregisteredLocaleException("Current locale not set")
         var text = getText(textID, currentLocale)
         if (text != null) {
             text = processArguments(text, args)
@@ -300,7 +301,7 @@ class Localizer @JvmOverloads constructor(
      * @throws NoLocalizedTextException    If there is no text for the specified id
      */
     fun getText(textID: String, args: Hashtable<*, *>): String {
-        val currentLocale = locale!!
+        val currentLocale = locale ?: throw UnregisteredLocaleException("Current locale not set")
         var text = getText(textID, currentLocale)
         if (text != null) {
             text = processArguments(text, args)

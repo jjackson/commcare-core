@@ -100,7 +100,7 @@ class ExtUtil {
                     ((`val`.toByteArray(Charsets.UTF_8).size / (Short.MAX_VALUE.toInt() * 2)) - 1) * 100
                 throw SerializationLimitationException(
                     percentOversized,
-                    e.cause!!,
+                    e,
                     "Error while trying to write $`val` percentOversized: $percentOversized"
                 )
             }
@@ -156,9 +156,9 @@ class ExtUtil {
             `in`: DataInputStream,
             ew: ExternalizableWrapper,
             pf: PrototypeFactory?
-        ): Any {
+        ): Any? {
             ew.readExternal(`in`, pf ?: defaultPrototypes())
-            return ew.`val`!!
+            return ew.`val`
         }
 
         @JvmStatic

@@ -56,7 +56,7 @@ class ExtWrapMapPoly : ExternalizableWrapper {
             if (ordered) OrderedHashtable(size.toInt()) else Hashtable(size.toInt())
         for (i in 0 until size) {
             val key = ExtUtil.read(`in`, keyType!!, pf)
-            val elem = ExtUtil.read(`in`, ExtWrapTagged(), pf)
+            val elem = ExtUtil.read(`in`, ExtWrapTagged(), pf)!!
             h[key] = elem
         }
         `val` = h

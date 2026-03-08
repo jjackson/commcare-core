@@ -44,7 +44,7 @@ class ExtWrapMultiMap : ExternalizableWrapper {
             val key = ExtUtil.read(`in`, keyType!!, pf)
             val numberOfValues = ExtUtil.readNumeric(`in`)
             for (l in 0 until numberOfValues) {
-                multimap.put(key, ExtUtil.read(`in`, ExtWrapTagged(), pf))
+                multimap.put(key, ExtUtil.read(`in`, ExtWrapTagged(), pf)!!)
             }
         }
         `val` = multimap
