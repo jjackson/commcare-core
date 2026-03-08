@@ -335,7 +335,7 @@ class Localizer @JvmOverloads constructor(
      * @throws UnregisteredLocaleException If the locale is not defined or null.
      * @throws NullPointerException        if textID is null
      */
-    fun getText(textID: String, locale: String): String? {
+    fun getText(textID: String, locale: String?): String? {
         var text = getRawText(locale, textID)
         if (text == null && fallbackDefaultForm && textID.contains(";")) {
             text = getRawText(locale, textID.substring(0, textID.indexOf(";")))

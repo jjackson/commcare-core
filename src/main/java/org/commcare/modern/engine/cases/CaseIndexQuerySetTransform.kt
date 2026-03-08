@@ -15,7 +15,7 @@ import org.javarosa.core.model.trace.EvaluationTrace
 /**
  * Created by ctsims on 2/6/2017.
  */
-class CaseIndexQuerySetTransform(private val table: CaseIndexTable) : QuerySetTransform {
+class CaseIndexQuerySetTransform(private val table: CaseIndexTable?) : QuerySetTransform {
 
     override fun getTransformedLookup(incoming: QuerySetLookup, relativeLookup: TreeReference): QuerySetLookup? {
         if (incoming.queryModelId == CaseQuerySetLookup.CASE_MODEL_ID) {
@@ -30,7 +30,7 @@ class CaseIndexQuerySetTransform(private val table: CaseIndexTable) : QuerySetTr
     class CaseIndexQuerySetLookup(
         internal var indexName: String,
         incoming: QuerySetLookup,
-        internal var table: CaseIndexTable
+        internal var table: CaseIndexTable?
     ) : DerivedCaseQueryLookup(incoming) {
 
         override fun loadModelQuerySet(queryContext: QueryContext): ModelQuerySet {
@@ -39,7 +39,7 @@ class CaseIndexQuerySetTransform(private val table: CaseIndexTable) : QuerySetTr
                     this.currentQuerySetId + "]")
 
             val querySetBody = rootLookup.getLookupSetBody(queryContext)
-            val ret = table.bulkReadIndexToCaseIdMatch(indexName, querySetBody)
+            val ret = table!!.bulkReadIndexToCaseIdMatch(indexName, querySetBody)
             cacheCaseModelQuerySet(queryContext, ret)
 
             trace.setOutcome("Loaded: " + ret.setBody.size)

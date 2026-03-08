@@ -322,7 +322,7 @@ class ExtUtil {
         }
 
         @JvmStatic
-        fun unwrap(o: Any): Any? {
+        fun unwrap(o: Any?): Any? {
             return if (o is ExternalizableWrapper) o.baseValue() else o
         }
 
