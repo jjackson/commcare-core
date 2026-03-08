@@ -82,7 +82,7 @@ class GroupDef : IFormElement {
         this.children = children ?: Vector()
     }
 
-    override fun addChild(fe: IFormElement) {
+    override fun addChild(fe: IFormElement?) {
         children.addElement(fe)
     }
 
@@ -203,7 +203,8 @@ class GroupDef : IFormElement {
         ExtUtil.write(dos, ExtWrapListPoly(getChildren()))
 
         ExtUtil.writeBool(dos, noAddRemove)
-        ExtUtil.write(dos, ExtWrapNullable(if (count != null) ExtWrapTagged(count) else null))
+        val currentCount = count
+        ExtUtil.write(dos, ExtWrapNullable(if (currentCount != null) ExtWrapTagged(currentCount) else null))
 
         ExtUtil.writeString(dos, ExtUtil.emptyIfNull(chooseCaption))
         ExtUtil.writeString(dos, ExtUtil.emptyIfNull(addCaption))

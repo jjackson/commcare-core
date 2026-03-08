@@ -144,7 +144,7 @@ class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
         return namespaces[prefix]
     }
 
-    public override fun clone(): FormInstance {
+    public fun clone(): FormInstance {
         val cloned = FormInstance(this.getRoot().deepCopy(true))
 
         cloned.setID(this.getID())
@@ -242,7 +242,7 @@ class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
      */
     @Throws(IOException::class, DeserializationException::class)
     fun migrateSerialization(`in`: DataInputStream, pf: PrototypeFactory?) {
-        super.readExternal(`in`, pf)
+        super.readExternal(`in`, pf!!)
         schema = ExtUtil.read(`in`, ExtWrapNullable(String::class.java), pf) as String?
         dateSaved = ExtUtil.read(`in`, ExtWrapNullable(Date::class.java), pf) as Date?
 

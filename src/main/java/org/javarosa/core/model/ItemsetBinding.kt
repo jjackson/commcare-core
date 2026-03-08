@@ -137,11 +137,13 @@ class ItemsetBinding : Externalizable {
         ExtUtil.write(out, labelRef!!)
         ExtUtil.write(out, ExtWrapTagged(labelExpr!!))
         ExtUtil.write(out, ExtWrapNullable(valueRef))
-        ExtUtil.write(out, ExtWrapNullable(if (valueExpr == null) null else ExtWrapTagged(valueExpr)))
+        val localValueExpr = valueExpr
+        ExtUtil.write(out, ExtWrapNullable(if (localValueExpr == null) null else ExtWrapTagged(localValueExpr)))
         ExtUtil.write(out, ExtWrapNullable(copyRef))
         ExtUtil.writeBool(out, labelIsItext)
         ExtUtil.writeBool(out, copyMode)
         ExtUtil.write(out, ExtWrapNullable(sortRef))
-        ExtUtil.write(out, ExtWrapNullable(if (sortExpr == null) null else ExtWrapTagged(sortExpr)))
+        val localSortExpr = sortExpr
+        ExtUtil.write(out, ExtWrapNullable(if (localSortExpr == null) null else ExtWrapTagged(localSortExpr)))
     }
 }

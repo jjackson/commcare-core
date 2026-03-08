@@ -54,7 +54,7 @@ class Condition : Triggerable {
 
     override fun apply(ref: TreeReference?, result: Any?, instance: FormInstance?, f: FormDef?) {
         val boolResult = result as Boolean
-        performAction(instance!!.resolveReference(ref)!!, if (boolResult) trueAction else falseAction)
+        performAction(instance!!.resolveReference(ref!!)!!, if (boolResult) trueAction else falseAction)
     }
 
     override fun canCascade(): Boolean {

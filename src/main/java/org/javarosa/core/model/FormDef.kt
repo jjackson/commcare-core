@@ -405,8 +405,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         if (relev) {
             val templNode = mainInstance!!.getTemplate(repeatRef)!!
             val parentPath = templNode.getParent()!!.getRef().genericize()
-            val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(repeatRef))
-            relev = parentNode!!.isRelevant
+            val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(repeatRef)!!)
+            relev = parentNode!!.isRelevant()
         }
 
         return relev
@@ -470,7 +470,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     fun copyItemsetAnswer(q: QuestionDef, targetNode: TreeElement, data: IAnswerData) {
         val itemset = q.getDynamicChoices()!!
         val targetRef = targetNode.getRef()
-        val destRef = itemset.getDestRef()!!.contextualize(targetRef)
+        val destRef = itemset.getDestRef()!!.contextualize(targetRef)!!
 
         var selections: Vector<Selection>? = null
         val selectedValues = Vector<String>()
@@ -1176,7 +1176,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             span.setTag("itemset", itemset.nodesetRef.toString())
             span.setTag("treeReference", curQRef.toString())
         }
-        ItemSetUtils.populateDynamicChoices(itemset, curQRef, exprEvalContext, getMainInstance(), mProfilingEnabled)
+        ItemSetUtils.populateDynamicChoices(itemset, curQRef, exprEvalContext!!, getMainInstance(), mProfilingEnabled)
     }
 
     private fun isTracingEnabled(): Boolean {
@@ -1314,7 +1314,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         ExtUtil.writeString(dos, ExtUtil.emptyIfNull(getName()))
         ExtUtil.write(dos, ExtWrapNullable(getTitle()))
         ExtUtil.write(dos, ExtWrapListPoly(getChildren()))
-        ExtUtil.write(dos, getMainInstance())
+        ExtUtil.write(dos, getMainInstance()!!)
         ExtUtil.write(dos, ExtWrapNullable(localizer))
 
         val conditions = Vector<Condition>()
@@ -1413,7 +1413,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         // so painful
         val templNode = mainInstance!!.getTemplate(index.getReference()!!)!!
         val parentPath = templNode.getParent()!!.getRef().genericize()
-        val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(index.getReference()!!))
+        val parentNode = mainInstance!!.resolveReference(parentPath.contextualize(index.getReference()!!)!!)
         return parentNode!!.getChildMultiplicity(templNode.getName()!!)
     }
 
@@ -1679,7 +1679,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
                 return if (currentRef == bind) fe else null
             } else {
                 for (i in 0 until fe.getChildren()!!.size) {
-                    val ret = findQuestionByRef(currentRef, fe.getChild(i))
+                    val ret = findQuestionByRef(currentRef, fe.getChild(i)!!)
                     if (ret != null)
                         return ret
                 }
@@ -1720,9 +1720,9 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
             }
 
             // add all the attributes of this element
-            for (i in 0 until treeElem.attributeCount) {
+            for (i in 0 until treeElem.getAttributeCount()) {
                 val child =
-                    treeElem.getAttribute(treeElem.getAttributeNamespace(i), treeElem.getAttributeName(i))!!
+                    treeElem.getAttribute(treeElem.getAttributeNamespace(i)!!, treeElem.getAttributeName(i))!!
                 val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)

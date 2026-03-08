@@ -60,7 +60,7 @@ class SetValueAction : Action {
             //Note: right now we're qualifying then testing parentage to see whether
             //there was a conflict, but it's not super clear whether this is a perfect
             //strategy
-            if (!contextRef.isParentOf(targetReference, false)) {
+            if (!contextRef.isParentOf(targetReference!!, false)) {
                 return null
             }
         }
@@ -70,10 +70,10 @@ class SetValueAction : Action {
 
         val failMessage = "Target of TreeReference ${currentTarget.toString(true)} could not be resolved!"
 
-        if (targetReference.hasPredicates()) {
+        if (targetReference!!.hasPredicates()) {
             //CTS: in theory these predicates could contain logic which breaks if the qualified ref
             //contains unbound repeats (IE: nested repeats).
-            val references = context.expandReference(targetReference)!!
+            val references = context.expandReference(targetReference!!)!!
             if (references.size == 0) {
                 //If after finding our concrete reference it is a template, this action is outside of the
                 //scope of the current target, so we can leave.
@@ -90,7 +90,7 @@ class SetValueAction : Action {
             }
         }
 
-        val node = context.resolveReference(targetReference)
+        val node = context.resolveReference(targetReference!!)
         if (node == null) {
             //After all that, there's still the possibility that the qualified reference contains
             //an unbound template, so see if such a reference could exist. Unfortunately this
@@ -117,7 +117,7 @@ class SetValueAction : Action {
         val value = Recalculate.wrapData(result, dataType)
 
         if (value == null) {
-            model.setValue(null, targetReference)
+            model.setValue(null, targetReference!!)
         } else {
             val targetData = try {
                 AnswerDataFactory.templateByDataType(dataType).cast(value.uncast())
@@ -128,7 +128,7 @@ class SetValueAction : Action {
                 ne.initCause(e)
                 throw ne
             }
-            model.setValue(targetData, targetReference)
+            model.setValue(targetData, targetReference!!)
         }
         return targetReference
     }
@@ -144,11 +144,11 @@ class SetValueAction : Action {
 
     @Throws(IOException::class)
     override fun writeExternal(out: DataOutputStream) {
-        ExtUtil.write(out, target)
+        ExtUtil.write(out, target!!)
 
         ExtUtil.write(out, ExtUtil.emptyIfNull(explicitValue))
         if (explicitValue == null) {
-            ExtUtil.write(out, ExtWrapTagged(value))
+            ExtUtil.write(out, ExtWrapTagged(value!!))
         }
     }
 
@@ -160,7 +160,7 @@ class SetValueAction : Action {
             return IElementHandler { p, e, parent ->
                 // the generic parseAction() method in XFormParser already checks to make sure
                 // that parent is an IFormElement, and throws an exception if it is not
-                p.parseSetValueAction((parent as IFormElement).actionController, e)
+                p.parseSetValueAction((parent as IFormElement).getActionController(), e)
             }
         }
     }

@@ -9,7 +9,7 @@ import java.util.Vector
 /**
  * @author ctsims
  */
-class InstanceBase(private val instanceName: String?) : AbstractTreeElement<AbstractTreeElement<*>> {
+class InstanceBase(private val instanceName: String?) : AbstractTreeElement<TreeElement> {
 
     private var child: AbstractTreeElement<*>? = null
 
@@ -27,28 +27,31 @@ class InstanceBase(private val instanceName: String?) : AbstractTreeElement<Abst
 
     override fun hasChildren(): Boolean = getNumChildren() > 0
 
-    override fun getChild(name: String, multiplicity: Int): AbstractTreeElement<*>? {
+    @Suppress("UNCHECKED_CAST")
+    override fun getChild(name: String, multiplicity: Int): TreeElement? {
         val currentChild = child
         if (currentChild != null && name == currentChild.getName() && multiplicity == 0) {
-            return currentChild
+            return currentChild as TreeElement?
         }
         return null
     }
 
-    override fun getChildrenWithName(name: String): Vector<AbstractTreeElement<*>> {
-        val children = Vector<AbstractTreeElement<*>>()
+    @Suppress("UNCHECKED_CAST")
+    override fun getChildrenWithName(name: String): Vector<TreeElement> {
+        val children = Vector<TreeElement>()
         val currentChild = child
         if (currentChild != null && name == currentChild.getName()) {
-            children.addElement(currentChild)
+            children.addElement(currentChild as TreeElement)
         }
         return children
     }
 
     override fun getNumChildren(): Int = 1
 
-    override fun getChildAt(i: Int): AbstractTreeElement<*>? {
+    @Suppress("UNCHECKED_CAST")
+    override fun getChildAt(i: Int): TreeElement? {
         return if (i == 0) {
-            child
+            child as TreeElement?
         } else {
             null
         }
@@ -81,7 +84,7 @@ class InstanceBase(private val instanceName: String?) : AbstractTreeElement<Abst
 
     override fun getAttributeValue(index: Int): String? = null
 
-    override fun getAttribute(namespace: String?, name: String): AbstractTreeElement<*>? = null
+    override fun getAttribute(namespace: String?, name: String): TreeElement? = null
 
     override fun getAttributeValue(namespace: String?, name: String): String? = null
 

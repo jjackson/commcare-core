@@ -119,7 +119,7 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceId))
         ExtUtil.writeBool(out, mUseCaseTemplate)
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(sourceUri))
-        ExtUtil.write(out, ExtWrapMultiMap(requestData))
+        ExtUtil.write(out, ExtWrapMultiMap(requestData!!))
         ExtUtil.write(out, ExtWrapNullable(storageReferenceId?.toString()))
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(reference))
     }

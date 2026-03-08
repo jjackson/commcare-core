@@ -175,7 +175,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
     /**
      * Return a copy of the reference
      */
-    public override fun clone(): TreeReference {
+    public fun clone(): TreeReference {
         val newRef = cloneWithEmptyData()
 
         for (l in data!!) {

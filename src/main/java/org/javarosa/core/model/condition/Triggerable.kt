@@ -130,7 +130,7 @@ abstract class Triggerable : Externalizable {
         // inquire about, but it _isn't_ necessarily the basis for the actual
         // expressions, so we need genericize that ref against the current
         // context
-        val ungenericised = originalContextRef!!.contextualize(context)
+        val ungenericised = originalContextRef!!.contextualize(context!!)!!
         val ec = EvaluationContext(parentContext, ungenericised)
         var triggerEval = ec
         if (mIsDebugOn) {
@@ -141,8 +141,8 @@ abstract class Triggerable : Externalizable {
         val result = eval(instance, triggerEval)
 
         for (baseTargetRef in targets) {
-            val targetRef = baseTargetRef.contextualize(ec.contextRef)
-            val expandedReferences = ec.expandReference(targetRef) ?: continue
+            val targetRef = baseTargetRef.contextualize(ec.contextRef!!)
+            val expandedReferences = ec.expandReference(targetRef!!) ?: continue
 
             for (affectedRef in expandedReferences) {
                 if (mIsDebugOn) {
@@ -181,8 +181,8 @@ abstract class Triggerable : Externalizable {
 
         // construct absolute references by anchoring against the original context reference
         val absTriggers = Vector<TreeReference>()
-        for (i in 0 until relTriggers.size()) {
-            val ref = relTriggers.elementAt(i).anchor(originalContextRef)
+        for (i in 0 until relTriggers.size) {
+            val ref = relTriggers.elementAt(i).anchor(originalContextRef!!)!!
             absTriggers.addElement(ref)
         }
         return absTriggers
@@ -276,7 +276,7 @@ abstract class Triggerable : Externalizable {
      * evaluation when that node comes into existence
      */
     fun narrowContextBy(anchorRef: TreeReference): TreeReference {
-        val contextualizedUsingAnchor = contextRef!!.contextualize(anchorRef)
+        val contextualizedUsingAnchor = contextRef!!.contextualize(anchorRef)!!
         return if (stopContextualizingAt != -1) {
             contextualizedUsingAnchor.genericizeAfter(stopContextualizingAt)
         } else {
@@ -327,7 +327,7 @@ abstract class Triggerable : Externalizable {
         val intersectionRef = contextRef!!.intersect(refInExpr.removePredicates())
         for (refLevel in 0 until Math.min(refInExpr.size(), intersectionRef.size())) {
             val predicates = refInExpr.getPredicate(refLevel)
-            if (predicates != null && predicates.size() > 0) {
+            if (predicates != null && predicates.size > 0) {
                 return refLevel
             }
         }

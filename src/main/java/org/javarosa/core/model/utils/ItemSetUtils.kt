@@ -197,7 +197,7 @@ object ItemSetUtils {
         var copyNode: TreeElement? = null
 
         if (itemset.copyMode && mainInstance != null) {
-            copyNode = mainInstance.resolveReference(itemset.copyRef!!.contextualize(choiceRef))
+            copyNode = mainInstance.resolveReference(itemset.copyRef!!.contextualize(choiceRef)!!)
         }
 
         if (itemset.valueRef != null) {

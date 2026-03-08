@@ -367,7 +367,7 @@ class EvaluationContext {
 
         // Batch fetch is going to mutate the predicates vector, create a copy
         if (predicates != null) {
-            val predCopy = Vector<XPathExpression>(predicates.size())
+            val predCopy = Vector<XPathExpression>(predicates.size)
             for (xpe in predicates) {
                 predCopy.addElement(xpe)
             }
@@ -381,13 +381,13 @@ class EvaluationContext {
         // Use the reference's simple predicates to filter the potential
         // nodeset.  Predicates used in filtering are removed from the
         // predicate input argument.
-        var childSet: Collection<TreeReference>? = node?.tryBatchChildFetch(name, mult, predicates, this)
+        var childSet: Collection<TreeReference>? = node?.tryBatchChildFetch(name!!, mult, predicates!!, this)
 
         this.reportBulkTraceResults(originalPredicates, predicates, childSet)
         this.closeTrace()
 
         if (childSet == null) {
-            childSet = loadReferencesChildren(node!!, name, mult, includeTemplates)
+            childSet = loadReferencesChildren(node!!, name!!, mult, includeTemplates)
         }
 
         val subContext = queryContext!!
@@ -402,11 +402,11 @@ class EvaluationContext {
         }
 
         // Create a place to store the current position markers
-        val positionContext = IntArray(if (predicates == null) 0 else predicates.size())
+        val positionContext = IntArray(if (predicates == null) 0 else predicates.size)
 
         for (refToExpand in childSet!!) {
             var passedAll = true
-            if (predicates != null && predicates.size() > 0) {
+            if (predicates != null && predicates.size > 0) {
                 // Evaluate and filter predicates not processed by
                 // tryBatchChildFetch
                 var predIndex = -1

@@ -528,7 +528,8 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(name))
         ExtUtil.writeNumeric(out, multiplicity.toLong())
         ExtUtil.writeNumeric(out, flags.toLong())
-        ExtUtil.write(out, ExtWrapNullable(if (value == null) null else ExtWrapTagged(value)))
+        val currentValue = value
+        ExtUtil.write(out, ExtWrapNullable(if (currentValue == null) null else ExtWrapTagged(currentValue)))
 
         writeChildrenToExternal(out)
 
@@ -660,7 +661,7 @@ class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
 
                 if (child.getMaskVar(MASK_REPEATABLE)) {
                     for (k in 0 until newChildren.size) {
-                        val template = f.mainInstance.getTemplate(child.getRef())
+                        val template = f.getMainInstance()!!.getTemplate(child.getRef())
                         val newChild = template!!.deepCopy(false)
                         newChild.setMult(k)
                         if (children == null) {

@@ -167,7 +167,8 @@ object TreeUtilities {
                     if (attributes == null) {
                         attributes = Vector()
                         indices = Vector()
-                        kids = parent.getChildrenWithName(name)
+                        @Suppress("UNCHECKED_CAST")
+                        kids = parent.getChildrenWithName(name) as Vector<TreeElement>
 
                         if (kids.size == 0) {
                             return null

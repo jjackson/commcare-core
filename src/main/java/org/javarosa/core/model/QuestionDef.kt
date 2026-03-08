@@ -179,7 +179,7 @@ class QuestionDef : IFormElement {
         throw IllegalStateException("Can't add children to question def")
     }
 
-    override fun addChild(fe: IFormElement) {
+    override fun addChild(fe: IFormElement?) {
         throw IllegalStateException("Can't add children to question def")
     }
 
@@ -209,7 +209,8 @@ class QuestionDef : IFormElement {
     @Throws(IOException::class)
     override fun writeExternal(dos: DataOutputStream) {
         ExtUtil.writeNumeric(dos, getID().toLong())
-        ExtUtil.write(dos, ExtWrapNullable(if (binding == null) null else ExtWrapTagged(binding)))
+        val currentBinding = binding
+        ExtUtil.write(dos, ExtWrapNullable(if (currentBinding == null) null else ExtWrapTagged(currentBinding)))
         ExtUtil.write(dos, ExtWrapNullable(getAppearanceAttr()))
         ExtUtil.writeNumeric(dos, getControlType().toLong())
         ExtUtil.write(dos, ExtWrapList(ExtUtil.emptyIfNull(choices)))
