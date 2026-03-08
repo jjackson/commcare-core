@@ -37,7 +37,7 @@ class ExtUtil {
 
         @JvmStatic
         fun defaultPrototypes(): PrototypeFactory {
-            return PrototypeManager.getDefault()
+            return PrototypeManager.getDefault()!!
         }
 
         @JvmStatic
