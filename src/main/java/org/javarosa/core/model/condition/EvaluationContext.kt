@@ -118,7 +118,7 @@ class EvaluationContext {
 
     constructor(
         instance: DataInstance<*>?,
-        formInstances: Hashtable<String, DataInstance<*>>
+        formInstances: Hashtable<String, @JvmSuppressWildcards DataInstance<*>>
     ) {
         this.formInstances = formInstances
         this.instance = instance

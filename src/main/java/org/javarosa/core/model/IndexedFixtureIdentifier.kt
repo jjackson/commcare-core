@@ -7,7 +7,7 @@ package org.javarosa.core.model
  * base name and child name along with the root level attributes.
  */
 class IndexedFixtureIdentifier(
-    @JvmField val fixtureBase: String,
-    @JvmField val fixtureChild: String,
-    @JvmField val rootAttributes: ByteArray?
+    val fixtureBase: String,
+    val fixtureChild: String,
+    val rootAttributes: ByteArray?
 )

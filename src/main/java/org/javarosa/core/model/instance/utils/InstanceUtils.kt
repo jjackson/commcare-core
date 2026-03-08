@@ -69,8 +69,8 @@ object InstanceUtils {
     @JvmStatic
     fun getLimitedInstances(
         limitingList: Set<String>?,
-        instances: Hashtable<String, DataInstance<*>>
-    ): Hashtable<String, DataInstance<*>> {
+        instances: Hashtable<String, @JvmSuppressWildcards DataInstance<*>>
+    ): Hashtable<String, @JvmSuppressWildcards DataInstance<*>> {
         val copy = Hashtable<String, DataInstance<*>>()
         val en = instances.keys()
         while (en.hasMoreElements()) {
