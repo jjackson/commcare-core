@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap
 import org.javarosa.core.model.FormDef
 import org.javarosa.core.model.IFormElement
 import org.javarosa.core.model.data.UncastData
+import org.javarosa.core.model.instance.AbstractTreeElement
 import org.javarosa.core.model.instance.TreeReference
 import org.javarosa.core.services.Logger
 import org.javarosa.core.util.externalizable.DeserializationException
@@ -63,7 +64,8 @@ class SendAction : Action {
         val map: Multimap<String, String> = ArrayListMultimap.create()
         val element = model.getEvaluationContext()!!.resolveReference(ref)
         for (i in 0 until element!!.getNumChildren()) {
-            val child = element.getChildAt(i)
+            @Suppress("UNCHECKED_CAST")
+            val child = element.getChildAt(i) as AbstractTreeElement<*>?
 
             val name = child!!.getName()
             val value = child.getValue()

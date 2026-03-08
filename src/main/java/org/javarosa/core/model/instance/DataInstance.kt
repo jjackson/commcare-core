@@ -90,14 +90,14 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
             return t
         }
 
-        var node: AbstractTreeElement<T>? = getBase()
+        var node: AbstractTreeElement<*>? = getBase()
         var result: T? = null
         for (i in 0 until ref.size()) {
             if (ec != null) {
                 val context = ec.getCurrentQueryContext()
                 QueryUtils.prepareSensitiveObjectForUseInCurrentContext(node, context)
                 @Suppress("UNCHECKED_CAST")
-                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node, context) as AbstractTreeElement<T>?
+                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node as AbstractTreeElement<Nothing>, context) as AbstractTreeElement<*>
             }
             val name = ref.getName(i)
             var mult = ref.getMultiplicity(i)
@@ -123,7 +123,8 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
                 }
             }
 
-            val child = node!!.getChild(name!!, mult)
+            @Suppress("UNCHECKED_CAST")
+            val child = node!!.getChild(name!!, mult) as T?
             node = child
             result = child
             if (node == null) {
@@ -153,7 +154,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
         }
 
         var walker: T? = null
-        var node: AbstractTreeElement<T>? = getBase()
+        var node: AbstractTreeElement<*>? = getBase()
         for (i in 0 until ref.size()) {
             val name = ref.getName(i)
 
@@ -163,9 +164,11 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
                 node = attr
                 walker = attr
             } else {
-                var newNode = node!!.getChild(name!!, TreeReference.INDEX_TEMPLATE)
+                @Suppress("UNCHECKED_CAST")
+                var newNode = node!!.getChild(name!!, TreeReference.INDEX_TEMPLATE) as T?
                 if (newNode == null) {
-                    newNode = node.getChild(name, 0)
+                    @Suppress("UNCHECKED_CAST")
+                    newNode = node.getChild(name, 0) as T?
                 }
                 if (newNode == null) {
                     return null
@@ -199,7 +202,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
      */
     private fun hasTemplatePathRec(
         topRef: TreeReference,
-        currentNode: AbstractTreeElement<T>?,
+        currentNode: AbstractTreeElement<*>?,
         depth: Int
     ): Boolean {
         // stop when at the end of reference
@@ -215,19 +218,18 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
 
         if (topRef.getMultiplicity(depth) == TreeReference.INDEX_ATTRIBUTE) {
             // recur on attribute node if the multiplicity designates it
-            @Suppress("UNCHECKED_CAST")
-            return hasTemplatePathRec(topRef, currentNode.getAttribute(null, name!!) as AbstractTreeElement<T>?, depth + 1)
+            return hasTemplatePathRec(topRef, currentNode.getAttribute(null, name!!), depth + 1)
         } else {
             // try to grab template node
             val nextNode = currentNode.getChild(name!!, TreeReference.INDEX_TEMPLATE)
             if (nextNode != null) {
-                return hasTemplatePathRec(topRef, nextNode, depth + 1)
+                return hasTemplatePathRec(topRef, nextNode as? AbstractTreeElement<*>, depth + 1)
             } else {
                 // if there isn't a template element, recur through normal children
                 // looking for the first valid path forward
                 val children = currentNode.getChildrenWithName(name)
                 for (child in children) {
-                    if (hasTemplatePathRec(topRef, child, depth + 1)) {
+                    if (hasTemplatePathRec(topRef, child as? AbstractTreeElement<*>, depth + 1)) {
                         // stop if we found a path
                         return true
                     }

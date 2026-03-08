@@ -1711,7 +1711,8 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         ) {
             // recursively add children of element
             for (i in 0 until treeElem.getNumChildren()) {
-                val child = treeElem.getChildAt(i)!!
+                @Suppress("UNCHECKED_CAST")
+                val child = treeElem.getChildAt(i) as AbstractTreeElement<*>
                 val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)

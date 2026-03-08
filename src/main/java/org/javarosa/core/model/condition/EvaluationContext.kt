@@ -469,15 +469,16 @@ class EvaluationContext {
         val childSet = Vector<TreeReference>()
         QueryUtils.prepareSensitiveObjectForUseInCurrentContext(node, getCurrentQueryContext())
 
-        @Suppress("NAME_SHADOWING")
-        val node = QuerySensitiveTreeElementWrapper.WrapWithContext(node, getCurrentQueryContext())
+        @Suppress("NAME_SHADOWING", "UNCHECKED_CAST")
+        val node = QuerySensitiveTreeElementWrapper.WrapWithContext(node as AbstractTreeElement<Nothing>, getCurrentQueryContext()) as AbstractTreeElement<*>
         // NOTE: This currently won't propagate the wrapped context.
 
         if (node.hasChildren()) {
             if (childMult == TreeReference.INDEX_UNBOUND) {
                 val count = node.getChildMultiplicity(childName)
                 for (i in 0 until count) {
-                    val child = node.getChild(childName, i)
+                    @Suppress("UNCHECKED_CAST")
+                    val child = node.getChild(childName, i) as AbstractTreeElement<*>?
                     if (child != null) {
                         childSet.addElement(child.getRef())
                     } else {
@@ -485,7 +486,8 @@ class EvaluationContext {
                     }
                 }
                 if (includeTemplates) {
-                    val template = node.getChild(childName, TreeReference.INDEX_TEMPLATE)
+                    @Suppress("UNCHECKED_CAST")
+                    val template = node.getChild(childName, TreeReference.INDEX_TEMPLATE) as AbstractTreeElement<*>?
                     if (template != null) {
                         childSet.addElement(template.getRef())
                     }
@@ -494,7 +496,8 @@ class EvaluationContext {
                 // TODO: Make this test childMult >= 0?
                 // If the multiplicity is a simple integer, just get the
                 // appropriate child
-                val child = node.getChild(childName, childMult)
+                @Suppress("UNCHECKED_CAST")
+                val child = node.getChild(childName, childMult) as AbstractTreeElement<*>?
                 if (child != null) {
                     childSet.addElement(child.getRef())
                 }
