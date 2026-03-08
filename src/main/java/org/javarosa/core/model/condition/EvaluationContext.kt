@@ -381,13 +381,17 @@ class EvaluationContext {
         // Use the reference's simple predicates to filter the potential
         // nodeset.  Predicates used in filtering are removed from the
         // predicate input argument.
-        var childSet: Collection<TreeReference>? = node?.tryBatchChildFetch(name!!, mult, predicates!!, this)
+        var childSet: Collection<TreeReference>? = if (node != null && name != null && predicates != null) {
+            node.tryBatchChildFetch(name, mult, predicates, this)
+        } else {
+            null
+        }
 
         this.reportBulkTraceResults(originalPredicates, predicates, childSet)
         this.closeTrace()
 
-        if (childSet == null) {
-            childSet = loadReferencesChildren(node!!, name!!, mult, includeTemplates)
+        if (childSet == null && node != null && name != null) {
+            childSet = loadReferencesChildren(node, name, mult, includeTemplates)
         }
 
         val subContext = queryContext!!
@@ -404,7 +408,7 @@ class EvaluationContext {
         // Create a place to store the current position markers
         val positionContext = IntArray(if (predicates == null) 0 else predicates.size)
 
-        for (refToExpand in childSet!!) {
+        for (refToExpand in childSet ?: return) {
             var passedAll = true
             if (predicates != null && predicates.size > 0) {
                 // Evaluate and filter predicates not processed by
