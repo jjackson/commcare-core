@@ -5,6 +5,7 @@ on:
     branches:
       - 'master'
       - 'formplayer'
+      - 'kotlin-port'
   pull_request:
     branches:
       - 'master'
@@ -15,24 +16,31 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JAVA_VERSION: '17'
-      JOB_GRADLE_VERSION: 8.1
-      FORMPLAYER_GRADLE_VERSION: 8.1
-      FORMPLAYER_JAVA_VERSION: '17'
     steps:
       - uses: actions/checkout@v6
-      - name: Set environment for Formplayer
-        if: ${{ github.ref_name == 'formplayer' || github.base_ref == 'formplayer' }}
-        run: |
-          echo "JOB_GRADLE_VERSION=${{ env.FORMPLAYER_GRADLE_VERSION }}" >> "$GITHUB_ENV"
-          echo "JAVA_VERSION=${{ env.FORMPLAYER_JAVA_VERSION }}" >> "$GITHUB_ENV"
+
       - name: Set up Java
         uses: actions/setup-java@v5
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          gradle-version: ${{ env.JOB_GRADLE_VERSION }}
-      - name: Build with Gradle
-        run: gradle build
+
+      - name: Build with Gradle (retry on dependency timeout)
+        run: |
+          # Retry up to 3 times to handle JitPack flakiness
+          for attempt in 1 2 3; do
+            echo "=== Build attempt $attempt ==="
+            if ./gradlew build --no-daemon; then
+              echo "Build succeeded on attempt $attempt"
+              exit 0
+            fi
+            if [ $attempt -lt 3 ]; then
+              echo "Build failed, retrying in 30s..."
+              sleep 30
+            fi
+          done
+          echo "Build failed after 3 attempts"
+          exit 1

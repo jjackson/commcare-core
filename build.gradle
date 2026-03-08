@@ -31,7 +31,14 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
+    maven {
+        url "https://jitpack.io"
+        content {
+            includeGroup "com.github.stefanhaustein"
+        }
+    }
+    // Fallback: local lib/ directory for vendored jars
+    flatDir { dirs 'lib' }
 }
 
 test {
