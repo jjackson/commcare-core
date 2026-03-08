@@ -1722,8 +1722,10 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
 
             // add all the attributes of this element
             for (i in 0 until treeElem.getAttributeCount()) {
+                val attrName = treeElem.getAttributeName(i) ?: continue
                 val child =
-                    treeElem.getAttribute(treeElem.getAttributeNamespace(i)!!, treeElem.getAttributeName(i)!!)!!
+                    treeElem.getAttribute(treeElem.getAttributeNamespace(i), attrName)
+                        ?: continue
                 val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)

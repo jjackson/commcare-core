@@ -13,7 +13,8 @@ import java.io.IOException
 /**
  * @author ctsims
  */
-open class ExternalDataInstance : DataInstance<TreeElement> {
+@Suppress("UNCHECKED_CAST")
+open class ExternalDataInstance : DataInstance<AbstractTreeElement<*>> {
 
     private var reference: String? = null
     private var root: AbstractTreeElement<*>? = null
@@ -67,16 +68,16 @@ open class ExternalDataInstance : DataInstance<TreeElement> {
     override fun getBase(): InstanceBase? = base
 
     @Suppress("UNCHECKED_CAST")
-    override fun getRoot(): TreeElement? {
+    override fun getRoot(): AbstractTreeElement<*>? {
         if (needsInit()) {
             throw RuntimeException("Attempt to use instance $instanceid without inititalization.")
         }
 
         val currentSource = source
         return if (currentSource != null) {
-            currentSource.getRoot() as TreeElement?
+            currentSource.getRoot()
         } else {
-            root as TreeElement?
+            root
         }
     }
 
