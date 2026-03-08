@@ -6,9 +6,13 @@ package org.javarosa.core.model.instance;
  * despite extending DataInstance<TreeElement>. Kotlin's type system prevents
  * this (it generates a checkcast to TreeElement), so this bridge class
  * handles the override in Java where raw types work.
+ *
+ * Using raw DataInstance (no type parameter) ensures the Java compiler
+ * sees the erased signature AbstractTreeElement getRoot(), which our
+ * override matches without issues.
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public abstract class AbstractExternalDataInstance extends DataInstance<TreeElement> {
+public abstract class AbstractExternalDataInstance extends DataInstance {
 
     public AbstractExternalDataInstance() {
         super();
