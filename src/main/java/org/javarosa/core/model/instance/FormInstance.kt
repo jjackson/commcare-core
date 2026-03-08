@@ -38,6 +38,7 @@ class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
     /**
      * The root of this tree
      */
+    @JvmField
     protected var root: TreeElement = TreeElement()
 
     constructor() {
