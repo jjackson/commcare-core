@@ -128,7 +128,7 @@ object TreeUtilities {
                         if (!hasPredicates) {
                             try {
                                 // Otherwise, go pull out the right hand value
-                                val o = FunctionUtils.unpack(right.eval(evalContext))
+                                val o = FunctionUtils.unpack(right.eval(evalContext!!))
                                 literalMatch = FunctionUtils.toString(o)
                             } catch (e: XPathException) {
                                 // We may have some weird lack of context that makes this not work, so don't choke on
@@ -201,9 +201,9 @@ object TreeUtilities {
                                 // did it's not available here) so we will try
                                 // to do some _very basic_ type inference on
                                 // this value before performing the match
-                                val value = FunctionUtils.InferType(attrValue)
+                                val value = FunctionUtils.InferType(attrValue!!)
 
-                                if (isEqOp == XPathEqExpr.testEquality(value, literalMatch)) {
+                                if (isEqOp == XPathEqExpr.testEquality(value, literalMatch!!)) {
                                     predicateMatches.add(kids.elementAt(kidI).getRef())
                                 }
                             }

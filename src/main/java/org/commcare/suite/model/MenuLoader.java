@@ -84,7 +84,7 @@ public class MenuLoader {
                         addUnaddedMenu(sessionWrapper, menuID, m, items, badges, hideTrainingRoot, includeBadges, allItems);
                     }
                 } catch (CommCareInstanceInitializer.FixtureInitializationException
-                         | XPathSyntaxException | XPathException xpe) {
+                         | XPathException xpe) {
                     setLoadException(xpe);
                     menus = new MenuDisplayable[0];
                     return;

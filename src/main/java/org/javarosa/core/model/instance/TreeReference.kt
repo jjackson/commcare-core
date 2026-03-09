@@ -750,12 +750,12 @@ class TreeReference : Externalizable, XPathAnalyzable {
                 if (analyzer.originalContextRef == null) {
                     throw AnalysisInvalidException.INSTANCE_NO_ORIGINAL_CONTEXT_REF
                 }
-                contextForPredicates = this.contextualize(analyzer.originalContextRef)!!
+                contextForPredicates = this.contextualize(analyzer.originalContextRef!!)!!
             } else if (!this.isAbsolute) {
                 if (analyzer.contextRef == null) {
                     throw AnalysisInvalidException.INSTANCE_NO_CONTEXT_REF
                 }
-                contextForPredicates = this.contextualize(analyzer.contextRef)!!
+                contextForPredicates = this.contextualize(analyzer.contextRef!!)!!
             }
 
             for (i in 0 until data!!.size) {

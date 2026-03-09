@@ -16,6 +16,7 @@
 
 package org.javarosa.core.model.condition
 
+import org.javarosa.core.model.instance.DataInstance
 import org.javarosa.core.model.instance.FormInstance
 import org.javarosa.core.services.Logger
 import org.javarosa.core.util.externalizable.DeserializationException
@@ -54,7 +55,7 @@ class Constraint : Externalizable {
                 ec.setOutputTextForm(textForm)
             }
             return try {
-                val value = xPathMsg.eval(instance, ec)
+                val value = xPathMsg.eval(instance!!, ec)
                 if (value != "") {
                     value as String
                 } else {
