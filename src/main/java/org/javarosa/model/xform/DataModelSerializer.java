@@ -53,7 +53,7 @@ public class DataModelSerializer {
 
         serializeAttributes(root);
         for (int i = 0; i < root.getNumChildren(); i++) {
-            AbstractTreeElement childAt = root.getChildAt(i);
+            AbstractTreeElement childAt = (AbstractTreeElement)root.getChildAt(i);
             serializeNode(childAt);
         }
 
@@ -74,7 +74,7 @@ public class DataModelSerializer {
             serializer.text(instanceNode.getValue().uncast().getString());
         } else {
             for (int i = 0; i < instanceNode.getNumChildren(); ++i) {
-                serializeNode(instanceNode.getChildAt(i));
+                serializeNode((AbstractTreeElement)instanceNode.getChildAt(i));
             }
         }
 

@@ -2,6 +2,7 @@ package org.commcare.cases.instance;
 
 import org.commcare.cases.model.StorageIndexedTreeElementModel;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.xml.util.InvalidStructureException;
 
@@ -28,8 +29,8 @@ public class FixtureIndexSchema {
         setupIndices(schemaTree.getChildrenWithName("index"));
     }
 
-    private void setupIndices(Vector<TreeElement> indexElements) throws InvalidStructureException {
-        for (TreeElement index : indexElements) {
+    private void setupIndices(Vector<AbstractTreeElement> indexElements) throws InvalidStructureException {
+        for (AbstractTreeElement index : indexElements) {
             IAnswerData value = index.getValue();
             if (value != null) {
                 String indexString = value.uncast().getString();
