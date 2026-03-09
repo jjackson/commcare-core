@@ -11,7 +11,9 @@ import org.commcare.suite.model.Menu;
 import org.commcare.suite.model.Suite;
 import org.commcare.util.CommCarePlatform;
 import org.commcare.xml.SuiteParser;
+import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.util.SizeBoundUniqueVector;
@@ -57,7 +59,8 @@ public class SuiteInstaller extends CacheInstaller<Suite> {
             InputStream incoming = null;
             try {
                 incoming = ref.getStream();
-                SuiteParser parser = new SuiteParser(incoming, table, r.getRecordGuid(), platform.getStorageManager().getStorage("fixture"));
+                //noinspection unchecked
+                SuiteParser parser = new SuiteParser(incoming, table, r.getRecordGuid(), (IStorageUtilityIndexed<FormInstance>)platform.getStorageManager().getStorage("fixture"));
                 if (location.getAuthority() == Resource.RESOURCE_AUTHORITY_REMOTE) {
                     parser.setMaximumAuthority(Resource.RESOURCE_AUTHORITY_REMOTE);
                 }

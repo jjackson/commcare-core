@@ -41,7 +41,8 @@ public abstract class CacheInstaller<T extends Persistable> implements ResourceI
 
     protected IStorageUtilityIndexed<T> storage(CommCarePlatform platform) {
         if (cacheStorage == null) {
-            cacheStorage = platform.getStorageManager().getStorage(getCacheKey());
+            //noinspection unchecked
+            cacheStorage = (IStorageUtilityIndexed<T>)platform.getStorageManager().getStorage(getCacheKey());
         }
         return cacheStorage;
     }
