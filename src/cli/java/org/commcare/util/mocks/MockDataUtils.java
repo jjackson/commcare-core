@@ -43,7 +43,7 @@ public class MockDataUtils {
                                                               Hashtable<String, String> instanceRefToId) {
         InstanceInitializationFactory iif = new CommCareInstanceInitializer(sandbox);
 
-        Hashtable<String, DataInstance> instances = new Hashtable<>();
+        Hashtable<String, DataInstance<?>> instances = new Hashtable<>();
         for (String instanceRef : instanceRefToId.keySet()) {
             String instanceId = instanceRefToId.get(instanceRef);
             ExternalDataInstance edi = new ExternalDataInstance(instanceRef, instanceId);

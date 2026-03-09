@@ -112,10 +112,10 @@ public abstract class StorageInstanceTreeElement<Model extends Externalizable, T
     }
 
     @Override
-    public Vector<T> getChildrenWithName(String name) {
+    public Vector<AbstractTreeElement> getChildrenWithName(String name) {
         if (name.equals(childName)) {
             loadElements();
-            return elements;
+            return new Vector<AbstractTreeElement>(elements);
         } else {
             return new Vector<>();
         }

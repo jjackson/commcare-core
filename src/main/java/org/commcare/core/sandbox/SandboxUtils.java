@@ -32,7 +32,7 @@ public class SandboxUtils {
     public static EvaluationContext getInstanceContexts(UserSandbox sandbox, String instanceId, String instanceRef){
         InstanceInitializationFactory iif = new CommCareInstanceInitializer(sandbox);
 
-        Hashtable<String, DataInstance> instances = new Hashtable<>();
+        Hashtable<String, DataInstance<?>> instances = new Hashtable<>();
         ExternalDataInstance edi = new ExternalDataInstance(instanceRef, instanceId);
         edi.initialize(iif, instanceId);
         instances.put(instanceId, edi);

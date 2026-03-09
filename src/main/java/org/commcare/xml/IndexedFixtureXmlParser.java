@@ -5,6 +5,7 @@ import org.commcare.cases.model.StorageIndexedTreeElementModel;
 import org.commcare.core.interfaces.UserSandbox;
 import org.commcare.data.xml.TransactionParser;
 import org.commcare.modern.util.Pair;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
@@ -86,8 +87,8 @@ public class IndexedFixtureXmlParser extends TransactionParser<StorageIndexedTre
             String entryName = root.getChildAt(0).getName();
             writeFixtureIndex(root, entryName);
 
-            for (TreeElement entry : root.getChildrenWithName(entryName)) {
-                processEntry(entry, indices);
+            for (AbstractTreeElement entry : root.getChildrenWithName(entryName)) {
+                processEntry((TreeElement)entry, indices);
             }
         } else {
             IStorageUtilityIndexed storage = sandbox.getIndexedFixtureStorage(fixtureName);

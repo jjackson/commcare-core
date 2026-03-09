@@ -20,7 +20,7 @@ class CaseIndexQuerySetTransform(private val table: CaseIndexTable?) : QuerySetT
     override fun getTransformedLookup(incoming: QuerySetLookup, relativeLookup: TreeReference): QuerySetLookup? {
         if (incoming.queryModelId == CaseQuerySetLookup.CASE_MODEL_ID) {
             if (relativeLookup.size() == 2 && "index" == relativeLookup.getName(0)) {
-                val indexName = relativeLookup.getName(1)
+                val indexName = relativeLookup.getName(1)!!
                 return CaseIndexQuerySetLookup(indexName, incoming, table)
             }
         }

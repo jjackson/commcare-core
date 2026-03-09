@@ -25,7 +25,7 @@ import java.util.Vector;
  * @author Phillip Mates (pmates@dimagi.com)
  */
 public abstract class StorageBackedChildElement<Model extends Externalizable>
-        implements QuerySensitiveTreeElement<TreeElement> {
+        implements QuerySensitiveTreeElement {
 
     protected final StorageInstanceTreeElement<Model, ?> parent;
     private TreeReference ref;
@@ -84,7 +84,7 @@ public abstract class StorageBackedChildElement<Model extends Externalizable>
     }
 
     @Override
-    public Vector<TreeElement> getChildrenWithName(String name) {
+    public Vector<AbstractTreeElement> getChildrenWithName(String name) {
         return cache().getChildrenWithName(name);
     }
 

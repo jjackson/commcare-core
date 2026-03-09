@@ -7,6 +7,7 @@ import org.commcare.cases.query.QuerySensitive;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.data.UncastData;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.utils.PreloadUtils;
@@ -66,10 +67,10 @@ public class CaseChildElement extends StorageBackedChildElement<Case> implements
     }
 
     @Override
-    public Vector<TreeElement> getChildrenWithName(String name) {
+    public Vector<AbstractTreeElement> getChildrenWithName(String name) {
         //In order
         TreeElement cached = cache();
-        Vector<TreeElement> children = cached.getChildrenWithName(name);
+        Vector<AbstractTreeElement> children = cached.getChildrenWithName(name);
 
         if (children.size() == 0) {
             TreeElement emptyNode = new TreeElement(name);
@@ -208,8 +209,8 @@ public class CaseChildElement extends StorageBackedChildElement<Case> implements
             }
 
             @Override
-            public Vector<TreeElement> getChildrenWithName(String name) {
-                Vector<TreeElement> children = super.getChildrenWithName(CaseChildElement.this.parent.intern(name));
+            public Vector<AbstractTreeElement> getChildrenWithName(String name) {
+                Vector<AbstractTreeElement> children = super.getChildrenWithName(CaseChildElement.this.parent.intern(name));
 
                 //If we haven't finished caching yet, we can safely not return
                 //something useful here, so we can construct as normal.

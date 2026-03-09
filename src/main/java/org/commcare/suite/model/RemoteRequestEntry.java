@@ -28,7 +28,7 @@ public class RemoteRequestEntry extends Entry {
 
     public RemoteRequestEntry(String commandId, DisplayUnit display,
                               Vector<SessionDatum> data,
-                              Hashtable<String, DataInstance> instances,
+                              Hashtable<String, DataInstance<?>> instances,
                               Vector<StackOperation> stackOperations,
                               AssertionSet assertions,
                               PostRequest post) {
