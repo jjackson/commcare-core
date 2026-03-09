@@ -13,10 +13,10 @@ import java.io.IOException
 /**
  * @author ctsims
  */
-open class ExternalDataInstance : AbstractExternalDataInstance {
+open class ExternalDataInstance : DataInstance<AbstractTreeElement> {
 
     private var reference: String? = null
-    private var root: AbstractTreeElement<*>? = null
+    private var root: AbstractTreeElement? = null
     private var base: InstanceBase? = null
     private var source: ExternalDataInstanceSource? = null
 
@@ -39,12 +39,12 @@ open class ExternalDataInstance : AbstractExternalDataInstance {
     }
 
     constructor(reference: String?, instanceId: String?, topLevel: TreeElement?) :
-            this(reference, instanceId, topLevel, null)
+            this(reference, instanceId, topLevel as AbstractTreeElement?, null)
 
     constructor(
         reference: String?,
         instanceId: String?,
-        topLevel: AbstractTreeElement<*>?,
+        topLevel: AbstractTreeElement?,
         source: ExternalDataInstanceSource?
     ) : this(reference, instanceId) {
         base = InstanceBase(instanceId)
@@ -66,7 +66,7 @@ open class ExternalDataInstance : AbstractExternalDataInstance {
 
     override fun getBase(): InstanceBase? = base
 
-    override fun getRootElement(): AbstractTreeElement<*>? {
+    override fun getRoot(): AbstractTreeElement? {
         if (needsInit()) {
             throw RuntimeException("Attempt to use instance $instanceid without inititalization.")
         }
@@ -108,9 +108,9 @@ open class ExternalDataInstance : AbstractExternalDataInstance {
         ExtUtil.write(out, ExtWrapNullable(source))
     }
 
-    override fun initialize(initializer: InstanceInitializationFactory, instanceId: String?): DataInstance<*> {
+    override fun initialize(initializer: InstanceInitializationFactory?, instanceId: String?): DataInstance<*> {
         base = InstanceBase(instanceId)
-        val instanceRoot = initializer.generateRoot(this)
+        val instanceRoot = initializer!!.generateRoot(this)
         // this indirectly calls `this.copyFromSource` via the InstanceRoot so that we call the
         // correct method based on the type
         instanceRoot.setupNewCopy(this)

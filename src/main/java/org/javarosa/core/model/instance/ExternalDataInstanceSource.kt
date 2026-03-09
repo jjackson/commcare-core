@@ -21,7 +21,7 @@ import java.io.IOException
  */
 class ExternalDataInstanceSource : InstanceRoot, Externalizable {
 
-    private var root: AbstractTreeElement<*>? = null
+    private var root: AbstractTreeElement? = null
     private var instanceId: String? = null
     private var mUseCaseTemplate: Boolean = false
     private var reference: String? = null
@@ -72,14 +72,14 @@ class ExternalDataInstanceSource : InstanceRoot, Externalizable {
         return root == null
     }
 
-    override fun getRoot(): AbstractTreeElement<*>? {
+    override fun getRoot(): AbstractTreeElement? {
         if (needsInit()) {
             throw RuntimeException("Uninstantiated external instance source")
         }
         return root
     }
 
-    fun init(root: AbstractTreeElement<*>?) {
+    fun init(root: AbstractTreeElement?) {
         if (this.root != null) {
             throw RuntimeException(
                 "Initializing an already instantiated external instance source is not permitted"

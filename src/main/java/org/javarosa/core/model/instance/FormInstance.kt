@@ -196,7 +196,7 @@ open class FormInstance : DataInstance<TreeElement>, Persistable, IMetaData {
         }
     }
 
-    override fun initialize(initializer: InstanceInitializationFactory, instanceId: String?): DataInstance<*> {
+    override fun initialize(initializer: InstanceInitializationFactory?, instanceId: String?): DataInstance<*> {
         this.instanceid = instanceId
         root.setInstanceName(instanceId)
 

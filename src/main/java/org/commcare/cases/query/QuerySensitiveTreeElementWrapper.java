@@ -18,20 +18,20 @@ import java.util.Vector;
  * Created by ctsims on 9/19/2017.
  */
 
-public class QuerySensitiveTreeElementWrapper<T extends AbstractTreeElement> implements AbstractTreeElement<T>{
-    QuerySensitiveTreeElement<T> wrapped;
+public class QuerySensitiveTreeElementWrapper implements AbstractTreeElement {
+    QuerySensitiveTreeElement wrapped;
     QueryContext context;
 
-    public static <T extends AbstractTreeElement> AbstractTreeElement<T> WrapWithContext(AbstractTreeElement<T> element, QueryContext context) {
+    public static AbstractTreeElement WrapWithContext(AbstractTreeElement element, QueryContext context) {
         if (context == null) { return element; }
         if (element instanceof QuerySensitiveTreeElement) {
-            return new QuerySensitiveTreeElementWrapper<>((QuerySensitiveTreeElement<T>)element, context);
+            return new QuerySensitiveTreeElementWrapper((QuerySensitiveTreeElement)element, context);
         } else {
             return element;
         }
     }
 
-    private QuerySensitiveTreeElementWrapper(QuerySensitiveTreeElement<T> wrapped, QueryContext context) {
+    private QuerySensitiveTreeElementWrapper(QuerySensitiveTreeElement wrapped, QueryContext context) {
         this.wrapped = wrapped;
         this.context = context;
     }
@@ -52,12 +52,12 @@ public class QuerySensitiveTreeElementWrapper<T extends AbstractTreeElement> imp
     }
 
     @Override
-    public T getChild(String name, int multiplicity) {
+    public AbstractTreeElement getChild(String name, int multiplicity) {
         return wrapped.getChild(context, name, multiplicity);
     }
 
     @Override
-    public Vector<T> getChildrenWithName(String name) {
+    public Vector<AbstractTreeElement> getChildrenWithName(String name) {
         return wrapped.getChildrenWithName(name);
     }
 
@@ -72,7 +72,7 @@ public class QuerySensitiveTreeElementWrapper<T extends AbstractTreeElement> imp
     }
 
     @Override
-    public T getChildAt(int i) {
+    public AbstractTreeElement getChildAt(int i) {
         return wrapped.getChildAt(i);
     }
 

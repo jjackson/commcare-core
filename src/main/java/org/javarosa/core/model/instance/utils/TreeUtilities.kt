@@ -59,7 +59,7 @@ object TreeUtilities {
      */
     @JvmStatic
     fun tryBatchChildFetch(
-        parent: AbstractTreeElement<*>,
+        parent: AbstractTreeElement,
         childAttributeHintMap: Hashtable<XPathPathExpr, Hashtable<String, Array<TreeElement>>>?,
         name: String?,
         mult: Int,
@@ -270,7 +270,7 @@ object TreeUtilities {
                 throw RuntimeException("Not implemented")
             }
 
-            override fun visit(element: AbstractTreeElement<*>) {
+            override fun visit(element: AbstractTreeElement) {
                 (element as TreeElement).setInstanceName(instanceId)
             }
         })

@@ -23,14 +23,14 @@ import java.util.Vector
  *
  * @author Clayton Sims
  */
-open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement<T> {
+open class ConcreteTreeElement : AbstractTreeElement {
 
     @JvmField
     protected var name: String? = null // can be null only for hidden root node
     @JvmField
     protected var multiplicity: Int = -1 // see TreeReference for special values
     @JvmField
-    protected var parent: AbstractTreeElement<*>? = null
+    protected var parent: AbstractTreeElement? = null
 
     @JvmField
     protected var value: IAnswerData? = null
@@ -38,9 +38,9 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
     // I made all of these null again because there are so many treeelements that they
     // take up a huuuge amount of space together.
     @JvmField
-    protected var attributes: Vector<T>? = null
+    protected var attributes: Vector<AbstractTreeElement>? = null
     @JvmField
-    protected var children: Vector<T>? = null
+    protected var children: Vector<AbstractTreeElement>? = null
 
     /* model properties */
     @JvmField
@@ -91,7 +91,7 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         }
     }
 
-    override fun getChild(name: String, multiplicity: Int): T? {
+    override fun getChild(name: String, multiplicity: Int): AbstractTreeElement? {
         val currentChildren = this.children ?: return null
 
         if (name == TreeReference.NAME_WILDCARD) {
@@ -111,12 +111,12 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         return null
     }
 
-    override fun getChildrenWithName(name: String): Vector<T> {
+    override fun getChildrenWithName(name: String): Vector<AbstractTreeElement> {
         return getChildrenWithName(name, false)
     }
 
-    private fun getChildrenWithName(name: String, includeTemplate: Boolean): Vector<T> {
-        val v = Vector<T>()
+    private fun getChildrenWithName(name: String, includeTemplate: Boolean): Vector<AbstractTreeElement> {
+        val v = Vector<AbstractTreeElement>()
         val currentChildren = children ?: return v
 
         for (i in 0 until currentChildren.size) {
@@ -134,17 +134,17 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
 
     override fun hasChildren(): Boolean = getNumChildren() > 0
 
-    override fun getChildAt(i: Int): T? = children!!.elementAt(i)
+    override fun getChildAt(i: Int): AbstractTreeElement? = children!!.elementAt(i)
 
     fun setDataType(dataType: Int) {
         this.dataType = dataType
     }
 
-    fun addChild(child: T) {
+    fun addChild(child: AbstractTreeElement) {
         addChild(child, false)
     }
 
-    private fun addChild(child: T, checkDuplicate: Boolean) {
+    private fun addChild(child: AbstractTreeElement, checkDuplicate: Boolean) {
         if (!isChildable) {
             throw RuntimeException("Can't add children to node that has data value!")
         }
@@ -180,7 +180,7 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         children!!.insertElementAt(child, i)
     }
 
-    fun removeChild(child: T) {
+    fun removeChild(child: AbstractTreeElement) {
         children?.removeElement(child)
     }
 
@@ -213,7 +213,7 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         val currentChildren = children ?: return
         val en = currentChildren.elements()
         while (en.hasMoreElements()) {
-            (en.nextElement() as ConcreteTreeElement<*>).accept(visitor)
+            (en.nextElement() as ConcreteTreeElement).accept(visitor)
         }
     }
 
@@ -236,11 +236,11 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
     /**
      * Get the String value of the provided attribute
      */
-    private fun getAttributeValue(attribute: T): String? {
+    private fun getAttributeValue(attribute: AbstractTreeElement): String? {
         return attribute.getValue()?.uncast()?.getString()
     }
 
-    override fun getAttribute(namespace: String?, name: String): T? {
+    override fun getAttribute(namespace: String?, name: String): AbstractTreeElement? {
         val currentAttributes = attributes ?: return null
         for (attribute in currentAttributes) {
             if (attribute.getName() == name && (namespace == null || namespace == attribute.getNamespace())) {
@@ -280,8 +280,7 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         attr.setValue(UncastData(value!!))
         attr.setParent(this)
 
-        @Suppress("UNCHECKED_CAST")
-        attributes!!.addElement(attr as T)
+        attributes!!.addElement(attr)
     }
 
     // return the tree reference that corresponds to this tree element
@@ -321,11 +320,11 @@ open class ConcreteTreeElement<T : AbstractTreeElement<*>> : AbstractTreeElement
         this.multiplicity = multiplicity
     }
 
-    fun setParent(parent: AbstractTreeElement<*>?) {
+    fun setParent(parent: AbstractTreeElement?) {
         this.parent = parent
     }
 
-    override fun getParent(): AbstractTreeElement<*>? = parent
+    override fun getParent(): AbstractTreeElement? = parent
 
     override fun getValue(): IAnswerData? = value
 

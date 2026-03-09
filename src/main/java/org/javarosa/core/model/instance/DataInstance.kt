@@ -24,7 +24,7 @@ import java.util.Vector
  *
  * @author ctsims
  */
-abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
+abstract class DataInstance<T : AbstractTreeElement> : Persistable {
 
     /**
      * The integer Id of the model
@@ -56,7 +56,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
         this.instanceid = instanceid
     }
 
-    abstract fun getBase(): AbstractTreeElement<T>?
+    abstract fun getBase(): AbstractTreeElement?
 
     abstract fun getRoot(): T?
 
@@ -90,14 +90,13 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
             return t
         }
 
-        var node: AbstractTreeElement<*>? = getBase()
+        var node: AbstractTreeElement? = getBase()
         var result: T? = null
         for (i in 0 until ref.size()) {
             if (ec != null) {
                 val context = ec.getCurrentQueryContext()
                 QueryUtils.prepareSensitiveObjectForUseInCurrentContext(node, context)
-                @Suppress("UNCHECKED_CAST")
-                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node as AbstractTreeElement<Nothing>, context) as AbstractTreeElement<*>
+                node = QuerySensitiveTreeElementWrapper.WrapWithContext(node, context)
             }
             val name = ref.getName(i)
             var mult = ref.getMultiplicity(i)
@@ -154,7 +153,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
         }
 
         var walker: T? = null
-        var node: AbstractTreeElement<*>? = getBase()
+        var node: AbstractTreeElement? = getBase()
         for (i in 0 until ref.size()) {
             val name = ref.getName(i)
 
@@ -202,7 +201,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
      */
     private fun hasTemplatePathRec(
         topRef: TreeReference,
-        currentNode: AbstractTreeElement<*>?,
+        currentNode: AbstractTreeElement?,
         depth: Int
     ): Boolean {
         // stop when at the end of reference
@@ -223,13 +222,13 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
             // try to grab template node
             val nextNode = currentNode.getChild(name!!, TreeReference.INDEX_TEMPLATE)
             if (nextNode != null) {
-                return hasTemplatePathRec(topRef, nextNode as? AbstractTreeElement<*>, depth + 1)
+                return hasTemplatePathRec(topRef, nextNode, depth + 1)
             } else {
                 // if there isn't a template element, recur through normal children
                 // looking for the first valid path forward
                 val children = currentNode.getChildrenWithName(name)
                 for (child in children) {
-                    if (hasTemplatePathRec(topRef, child as? AbstractTreeElement<*>, depth + 1)) {
+                    if (hasTemplatePathRec(topRef, child, depth + 1)) {
                         // stop if we found a path
                         return true
                     }
@@ -282,7 +281,7 @@ abstract class DataInstance<T : AbstractTreeElement<*>> : Persistable {
         this.recordid = recordid
     }
 
-    abstract fun initialize(initializer: InstanceInitializationFactory, instanceId: String?): DataInstance<*>
+    abstract fun initialize(initializer: InstanceInitializationFactory?, instanceId: String?): DataInstance<*>
 
     fun getCacheHost(): CacheHost? = mCacheHost
 

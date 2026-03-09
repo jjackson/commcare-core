@@ -6,7 +6,7 @@ import org.javarosa.core.model.instance.utils.ITreeVisitor
 import org.javarosa.xpath.expr.XPathExpression
 import java.util.Vector
 
-interface AbstractTreeElement<T> {
+interface AbstractTreeElement {
 
     val isLeaf: Boolean
 
@@ -20,18 +20,18 @@ interface AbstractTreeElement<T> {
      * @param name         the name of the child element to select
      * @param multiplicity is the n-th occurence of an element with a given name
      */
-    fun getChild(name: String, multiplicity: Int): T?
+    fun getChild(name: String, multiplicity: Int): AbstractTreeElement?
 
     /**
      * Get all the child nodes of this element, with specific name
      */
-    fun getChildrenWithName(name: String): Vector<T>
+    fun getChildrenWithName(name: String): Vector<AbstractTreeElement>
 
     fun hasChildren(): Boolean
 
     fun getNumChildren(): Int
 
-    fun getChildAt(i: Int): T?
+    fun getChildAt(i: Int): AbstractTreeElement?
 
     val isRepeatable: Boolean
 
@@ -73,7 +73,7 @@ interface AbstractTreeElement<T> {
      * If 'null' is provided for the namespace, it will match the first
      * attribute with the matching name.
      */
-    fun getAttribute(namespace: String?, name: String): AbstractTreeElement<*>?
+    fun getAttribute(namespace: String?, name: String): AbstractTreeElement?
 
     /**
      * get value of attribute with namespace:name' in the vector
@@ -88,7 +88,7 @@ interface AbstractTreeElement<T> {
     fun getMult(): Int
 
     // Support?
-    fun getParent(): AbstractTreeElement<*>?
+    fun getParent(): AbstractTreeElement?
 
     fun getValue(): IAnswerData?
 

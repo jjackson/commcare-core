@@ -5,7 +5,7 @@ package org.javarosa.core.model.instance
  * along with any other metadata about the instance.
  */
 interface InstanceRoot {
-    fun getRoot(): AbstractTreeElement<*>?
+    fun getRoot(): AbstractTreeElement?
 
     fun setupNewCopy(instance: ExternalDataInstance)
 }

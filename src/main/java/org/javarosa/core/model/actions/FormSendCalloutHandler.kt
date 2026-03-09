@@ -19,5 +19,5 @@ interface FormSendCalloutHandler {
      *
      * note: Neither input is specifically scrubbed for url encoding
      */
-    fun performHttpCalloutForResponse(url: String, paramMap: Multimap<String, String>): String?
+    fun performHttpCalloutForResponse(url: String, paramMap: Multimap<String, String>?): String?
 }

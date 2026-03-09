@@ -2,6 +2,7 @@ package org.commcare.session;
 
 import org.commcare.suite.model.StackFrameStep;
 import org.javarosa.core.model.data.UncastData;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.util.OrderedHashtable;
@@ -41,10 +42,10 @@ public class SessionInstanceBuilder {
         for (StackFrameStep step : frame.getSteps()) {
             if (SessionFrame.isEntitySelectionDatum(step.getType()) ||
                     SessionFrame.STATE_DATUM_COMPUTED.equals(step.getType())) {
-                Vector<TreeElement> matchingElements =
+                Vector<AbstractTreeElement> matchingElements =
                         sessionData.getChildrenWithName(step.getId());
                 if (matchingElements.size() > 0) {
-                    matchingElements.elementAt(0).setValue(new UncastData(step.getValue()));
+                    ((TreeElement)matchingElements.elementAt(0)).setValue(new UncastData(step.getValue()));
                 } else {
                     addData(sessionData, step.getId(), step.getValue());
                 }

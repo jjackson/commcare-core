@@ -6,10 +6,10 @@ package org.javarosa.core.model.instance
  * the `commcaresession` instance.
  */
 open class ConcreteInstanceRoot(
-    @JvmField protected var root: AbstractTreeElement<*>?
+    @JvmField protected var root: AbstractTreeElement?
 ) : InstanceRoot {
 
-    override fun getRoot(): AbstractTreeElement<*>? {
+    override fun getRoot(): AbstractTreeElement? {
         return root
     }
 

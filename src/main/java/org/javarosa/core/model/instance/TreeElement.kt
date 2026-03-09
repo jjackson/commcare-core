@@ -39,14 +39,14 @@ import java.util.Vector
  *
  * @author Clayton Sims
  */
-open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
+open class TreeElement : Externalizable, AbstractTreeElement {
 
     @JvmField
     protected var name: String? = null // can be null only for hidden root node
     @JvmField
     protected var multiplicity: Int = -1 // see TreeReference for special values
     @JvmField
-    protected var parent: AbstractTreeElement<*>? = null
+    protected var parent: AbstractTreeElement? = null
 
     @JvmField
     protected var value: IAnswerData? = null
@@ -146,17 +146,17 @@ open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
         return null
     }
 
-    override fun getChildrenWithName(name: String): Vector<TreeElement> {
+    override fun getChildrenWithName(name: String): Vector<AbstractTreeElement> {
         return getChildrenWithName(name, false)
     }
 
-    private fun getChildrenWithName(name: String, includeTemplate: Boolean): Vector<TreeElement> {
-        val v = Vector<TreeElement>()
+    private fun getChildrenWithName(name: String, includeTemplate: Boolean): Vector<AbstractTreeElement> {
+        val v = Vector<AbstractTreeElement>()
         val currentChildren = children ?: return v
 
         for (child in currentChildren) {
             if ((child.getName() == name || name == TreeReference.NAME_WILDCARD) &&
-                (includeTemplate || child.multiplicity != TreeReference.INDEX_TEMPLATE)
+                (includeTemplate || child.getMult() != TreeReference.INDEX_TEMPLATE)
             )
                 v.addElement(child)
         }
@@ -615,14 +615,14 @@ open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
                             children = Vector()
                         }
                         this.children!!.insertElementAt(newChild, j + k + 1)
-                        newChild.populate(newChildren.elementAt(k))
+                        newChild.populate(newChildren.elementAt(k) as TreeElement)
                     }
                     j += newChildren.size
                 } else {
                     if (newChildren.size == 0) {
                         child.setRelevant(false)
                     } else {
-                        child.populate(newChildren.elementAt(0))
+                        child.populate(newChildren.elementAt(0) as TreeElement)
                     }
                 }
                 j++
@@ -668,11 +668,11 @@ open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
                             children = Vector()
                         }
                         this.children!!.insertElementAt(newChild, i + k + 1)
-                        newChild.populateTemplate(newChildren.elementAt(k), f)
+                        newChild.populateTemplate(newChildren.elementAt(k) as TreeElement, f)
                     }
                     i += newChildren.size
                 } else {
-                    child.populateTemplate(newChildren.elementAt(0), f)
+                    child.populateTemplate(newChildren.elementAt(0) as TreeElement, f)
                 }
                 i++
             }
@@ -727,12 +727,12 @@ open class TreeElement : Externalizable, AbstractTreeElement<TreeElement> {
         this.multiplicity = multiplicity
     }
 
-    fun setParent(parent: AbstractTreeElement<*>?) {
+    fun setParent(parent: AbstractTreeElement?) {
         expireReferenceCache()
         this.parent = parent
     }
 
-    override fun getParent(): AbstractTreeElement<*>? = parent
+    override fun getParent(): AbstractTreeElement? = parent
 
     override fun getValue(): IAnswerData? = value
 

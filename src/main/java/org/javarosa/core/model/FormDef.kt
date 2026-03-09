@@ -1247,17 +1247,17 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
      */
     fun initialize(
         newInstance: Boolean, isCompletedInstance: Boolean,
-        factory: InstanceInitializationFactory
+        factory: InstanceInitializationFactory?
     ) {
         initialize(newInstance, isCompletedInstance, factory, null, false)
     }
 
-    fun initialize(newInstance: Boolean, factory: InstanceInitializationFactory) {
+    fun initialize(newInstance: Boolean, factory: InstanceInitializationFactory?) {
         initialize(newInstance, false, factory, null, false)
     }
 
     fun initialize(
-        newInstance: Boolean, factory: InstanceInitializationFactory,
+        newInstance: Boolean, factory: InstanceInitializationFactory?,
         locale: String?, isReadOnly: Boolean
     ) {
         initialize(newInstance, false, factory, locale, isReadOnly)
@@ -1269,7 +1269,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
     @Trace
     fun initialize(
         newInstance: Boolean, isCompletedInstance: Boolean,
-        factory: InstanceInitializationFactory,
+        factory: InstanceInitializationFactory?,
         locale: String?, isReadOnly: Boolean
     ) {
         val en = formInstances.keys()
@@ -1641,7 +1641,7 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
         this.sendCalloutHandler = sendCalloutHandler
     }
 
-    fun dispatchSendCallout(url: String, paramMap: Multimap<String, String>): String? {
+    fun dispatchSendCallout(url: String, paramMap: Multimap<String, String>?): String? {
         return if (sendCalloutHandler == null) {
             null
         } else {
@@ -1706,13 +1706,12 @@ class FormDef : IFormElement, IMetaData, ActionController.ActionResultProcessor 
          */
         @JvmStatic
         private fun addChildrenOfElement(
-            treeElem: AbstractTreeElement<*>,
+            treeElem: AbstractTreeElement,
             genericRefs: MutableList<TreeReference>
         ) {
             // recursively add children of element
             for (i in 0 until treeElem.getNumChildren()) {
-                @Suppress("UNCHECKED_CAST")
-                val child = treeElem.getChildAt(i) as AbstractTreeElement<*>
+                val child = treeElem.getChildAt(i)!!
                 val genericChild = child.getRef().genericize()
                 if (!genericRefs.contains(genericChild)) {
                     genericRefs.add(genericChild)

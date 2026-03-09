@@ -9,11 +9,11 @@ import java.util.Vector
 /**
  * @author ctsims
  */
-class InstanceBase(private val instanceName: String?) : AbstractTreeElement<TreeElement> {
+class InstanceBase(private val instanceName: String?) : AbstractTreeElement {
 
-    private var child: AbstractTreeElement<*>? = null
+    private var child: AbstractTreeElement? = null
 
-    fun setChild(child: AbstractTreeElement<*>?) {
+    fun setChild(child: AbstractTreeElement?) {
         this.child = child
     }
 
@@ -27,31 +27,28 @@ class InstanceBase(private val instanceName: String?) : AbstractTreeElement<Tree
 
     override fun hasChildren(): Boolean = getNumChildren() > 0
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getChild(name: String, multiplicity: Int): TreeElement? {
+    override fun getChild(name: String, multiplicity: Int): AbstractTreeElement? {
         val currentChild = child
         if (currentChild != null && name == currentChild.getName() && multiplicity == 0) {
-            return currentChild as TreeElement?
+            return currentChild
         }
         return null
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getChildrenWithName(name: String): Vector<TreeElement> {
-        val children = Vector<TreeElement>()
+    override fun getChildrenWithName(name: String): Vector<AbstractTreeElement> {
+        val children = Vector<AbstractTreeElement>()
         val currentChild = child
         if (currentChild != null && name == currentChild.getName()) {
-            children.addElement(currentChild as TreeElement)
+            children.addElement(currentChild)
         }
         return children
     }
 
     override fun getNumChildren(): Int = 1
 
-    @Suppress("UNCHECKED_CAST")
-    override fun getChildAt(i: Int): TreeElement? {
+    override fun getChildAt(i: Int): AbstractTreeElement? {
         return if (i == 0) {
-            child as TreeElement?
+            child
         } else {
             null
         }
@@ -84,7 +81,7 @@ class InstanceBase(private val instanceName: String?) : AbstractTreeElement<Tree
 
     override fun getAttributeValue(index: Int): String? = null
 
-    override fun getAttribute(namespace: String?, name: String): TreeElement? = null
+    override fun getAttribute(namespace: String?, name: String): AbstractTreeElement? = null
 
     override fun getAttributeValue(namespace: String?, name: String): String? = null
 
@@ -98,7 +95,7 @@ class InstanceBase(private val instanceName: String?) : AbstractTreeElement<Tree
 
     override fun getMult(): Int = TreeReference.DEFAULT_MUTLIPLICITY
 
-    override fun getParent(): AbstractTreeElement<*>? = null
+    override fun getParent(): AbstractTreeElement? = null
 
     override fun getValue(): IAnswerData? = null
 

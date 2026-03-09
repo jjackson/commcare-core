@@ -845,7 +845,7 @@ class TreeReference : Externalizable, XPathAnalyzable {
         }
 
         @JvmStatic
-        fun buildRefFromTreeElement(elem: AbstractTreeElement<*>?): TreeReference {
+        fun buildRefFromTreeElement(elem: AbstractTreeElement?): TreeReference {
             var elem = elem
             var ref = selfRef()
 

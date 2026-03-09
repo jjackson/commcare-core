@@ -15,5 +15,5 @@ import org.javarosa.core.model.utils.IInstanceVisitor
 interface ITreeVisitor : IInstanceVisitor {
     override fun visit(tree: FormInstance)
 
-    fun visit(element: AbstractTreeElement<*>)
+    fun visit(element: AbstractTreeElement)
 }

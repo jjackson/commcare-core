@@ -36,7 +36,7 @@ object InstanceUtils {
      */
     @JvmStatic
     fun setUpInstanceRoot(
-        instanceRoot: AbstractTreeElement<*>?,
+        instanceRoot: AbstractTreeElement?,
         instanceId: String?,
         instanceBase: InstanceBase?
     ) {

@@ -47,7 +47,7 @@ class SendAction : Action {
 
         var result: String? = null
         try {
-            result = model.dispatchSendCallout(url!!, map!!)
+            result = model.dispatchSendCallout(url!!, map)
         } catch (e: Exception) {
             Logger.exception("send-action", e)
         }
@@ -64,8 +64,7 @@ class SendAction : Action {
         val map: Multimap<String, String> = ArrayListMultimap.create()
         val element = model.getEvaluationContext()!!.resolveReference(ref)
         for (i in 0 until element!!.getNumChildren()) {
-            @Suppress("UNCHECKED_CAST")
-            val child = element.getChildAt(i) as AbstractTreeElement<*>?
+            val child = element.getChildAt(i)
 
             val name = child!!.getName()
             val value = child.getValue()
