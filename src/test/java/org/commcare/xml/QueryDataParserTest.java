@@ -101,7 +101,7 @@ public class QueryDataParserTest {
         QueryData queryData = parser.parse();
         assertEquals("case_id_list", queryData.getKey());
 
-        Hashtable<String, DataInstance> instances = TestInstances.getInstances();
+        Hashtable<String, DataInstance<?>> instances = TestInstances.getInstances();
         EvaluationContext evalContext = new EvaluationContext(null, instances);
         assertEquals(Arrays.asList("456", "789"), queryData.getValues(evalContext));
     }
@@ -116,7 +116,7 @@ public class QueryDataParserTest {
         QueryData queryData = parser.parse();
         assertEquals("case_id_list", queryData.getKey());
 
-        Hashtable<String, DataInstance> instances = TestInstances.getInstances();
+        Hashtable<String, DataInstance<?>> instances = TestInstances.getInstances();
         EvaluationContext evalContext = new EvaluationContext(null, instances);
         assertEquals(Arrays.asList("123", "456", "789"), queryData.getValues(evalContext));
     }

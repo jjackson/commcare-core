@@ -8,7 +8,7 @@ import org.javarosa.core.model.instance.AbstractTreeElement;
  * Created by ctsims on 9/19/2017.
  */
 
-public interface QuerySensitiveTreeElement<T extends AbstractTreeElement> extends AbstractTreeElement<T> {
+public interface QuerySensitiveTreeElement extends AbstractTreeElement {
 
     /**
      * Retrieves the TreeElement representing the attribute at
@@ -17,7 +17,7 @@ public interface QuerySensitiveTreeElement<T extends AbstractTreeElement> extend
      * If 'null' is provided for the namespace, it will match the first
      * attribute with the matching name.
      */
-    T getAttribute(QueryContext context, String namespace, String name);
+    AbstractTreeElement getAttribute(QueryContext context, String namespace, String name);
 
     int getChildMultiplicity(QueryContext context, String name);
 
@@ -27,5 +27,5 @@ public interface QuerySensitiveTreeElement<T extends AbstractTreeElement> extend
      * @param name         the name of the child element to select
      * @param multiplicity is the n-th occurence of an element with a given name
      */
-    T getChild(QueryContext context, String name, int multiplicity);
+    AbstractTreeElement getChild(QueryContext context, String name, int multiplicity);
 }

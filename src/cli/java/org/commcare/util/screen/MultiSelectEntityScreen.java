@@ -144,7 +144,7 @@ public class MultiSelectEntityScreen extends EntityScreen {
     private void validateEntitiesInInstance(ExternalDataInstance instance) throws CommCareSessionException {
         AbstractTreeElement root = instance.getRoot();
         for (int i = 0; i < root.getNumChildren(); i++) {
-            String entityVal = root.getChildAt(i).getValue().uncast().getString();
+            String entityVal = ((AbstractTreeElement)root.getChildAt(i)).getValue().uncast().getString();
             getAndValidateEntityReference(entityVal);
         }
     }
@@ -231,7 +231,7 @@ public class MultiSelectEntityScreen extends EntityScreen {
             AbstractTreeElement root = selectedValuesInstance.getRoot();
             int caseCount = root.getNumChildren();
             if (caseCount > 0) {
-                String caseId = root.getChildAt(0).getValue().getDisplayText();
+                String caseId = ((AbstractTreeElement)root.getChildAt(0)).getValue().getDisplayText();
                 String caseName = null;
                 QueryScreen queryScreen = this.getQueryScreen();
                 IStorageUtilityIndexed<Case> caseSearchStorage = queryScreen != null ? queryScreen.getCaseSearchStorage() : null;

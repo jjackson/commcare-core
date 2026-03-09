@@ -144,8 +144,8 @@ public class StackFrameStep implements Externalizable {
         }
     }
 
-    public Map<String, DataInstance> getInstances(InstanceInitializationFactory iif) {
-        HashMap<String, DataInstance> instances = new HashMap<>();
+    public Map<String, DataInstance<?>> getInstances(InstanceInitializationFactory iif) {
+        HashMap<String, DataInstance<?>> instances = new HashMap<>();
         for (ExternalDataInstanceSource source : dataInstanceSources.values()) {
             ExternalDataInstance instance = (ExternalDataInstance)source.toInstance()
                     .initialize(iif, source.getInstanceId());
